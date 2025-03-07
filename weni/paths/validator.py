@@ -1,8 +1,8 @@
+from weni.paths.msg_path import MsgPath
 from weni.utils.exceptions import ValidationError
-from weni.contracts import Msg
 
 VALID_CONTRACTS = {
-    "messages": Msg,
+    "messages": MsgPath,
 }
 
 def validate_path(path_class):

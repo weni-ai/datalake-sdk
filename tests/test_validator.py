@@ -1,31 +1,19 @@
-# import pytest
-# from datetime import datetime
-# from weni.contracts.validator import validate_contract
-# from weni.paths.msg_path import MsgPath
-# from weni.contracts.msg import Msg
+import pytest
+from weni.paths.msg_path import MsgPath
+from weni.utils.exceptions import ValidationError
+from weni.paths.validator import validate_path
 
-# def test_valid_contract():
-#     msg = Msg(id="123", text="Oi!", sender="user1", org_id="456")
-#     assert validate_contract(MsgPath, msg) is True
+class FakePath:
+    @staticmethod
+    def get_table_name():
+        return "invalid_table"
 
-# def test_missing_optional_fields():
-#     msg = Msg(id="123", org_id="456")  # Apenas 'id', sem problema
-#     assert validate_contract(MsgPath, msg) is True
+def test_validate_path_success():
+    try:
+        validate_path(MsgPath)
+    except ValidationError:
+        pytest.fail("validate_path got a error!")
 
-# def test_extra_fields():
-#     msg_data = {
-#         "id": "123",
-#         "org_id": "456",
-#         "text": "Oi!",
-#         "sender": "user1",
-#         "extra_field": "Isso não deveria estar aqui"  # Inválido
-#     }
-
-#     with pytest.raises(ValueError, match="Campos não permitidos encontrados"):
-#         validate_contract(MsgPath, msg_data)
-
-# def test_missing_required_field():
-#     msg_data = {"text": "Oi!", "org_id":"15988"}  # Falta o campo 'id'
-
-#     with pytest.raises(TypeError):  # O dataclass exige 'id'
-#         Msg(**msg_data)
+def test_validate_path_fail():
+    with pytest.raises(ValidationError, match="Path 'invalid_table' is not valid."):
+        validate_path(FakePath)

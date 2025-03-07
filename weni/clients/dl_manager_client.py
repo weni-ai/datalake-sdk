@@ -1,7 +1,7 @@
 import requests
 
-from weni.utils.exceptions import DLManagerError, ValidationError
-from weni.paths.validator import validate_contract, validate_path
+from weni.utils.exceptions import DLManagerError
+from weni.paths.validator import validate_path
 
 class DLManagerClient:
     """
