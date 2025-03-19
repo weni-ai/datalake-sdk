@@ -10,7 +10,10 @@ readme = "README.md"
 python = ">=3.11,<3.13"
 boto3 = "^1.28"
 pytest = "^7.4"
-moto = "^4.1
+moto = "^4.1"
+grpcio = "^1.71.0"
+grpcio-tools = "^1.71.0"
+grpcio-health-checking = "^1.71.0"
 
 [tool.poetry.dev-dependencies]
 black = "^23.1.0"
