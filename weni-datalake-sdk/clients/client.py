@@ -10,7 +10,7 @@ def send_data():
 
     request = msgs_pb2.InsertRequest(
         path="message",
-        data={"project_id": 94, "text": "Ola mundo"}
+        data={"project_id": "100", "text": "Agora vai meu amigo", "direction": "O"}
     )
 
     response = stub.InsertData(request)
