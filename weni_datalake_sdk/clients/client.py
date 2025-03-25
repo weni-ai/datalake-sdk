@@ -1,6 +1,5 @@
 import grpc
-import msgs_pb2
-import msgs_pb2_grpc
+from weni_datalake_sdk.clients import msgs_pb2, msgs_pb2_grpc
 
 SERVER_ADDRESS = "localhost:50051"
 
