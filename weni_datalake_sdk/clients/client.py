@@ -7,7 +7,7 @@ from weni_datalake_sdk.paths.validator import validate_path
 SERVER_ADDRESS = settings.DATALAKE_SERVER_ADDRESS
 
 def send_data(path, data):
-    channel = grpc.insecure_channel(SERVER_ADDRESS)
+    channel = grpc.insecure_channel(target=SERVER_ADDRESS)
     stub = msgs_pb2_grpc.DatalakeManagerServiceStub(channel)
 
     if isinstance(path, type):
