@@ -34,9 +34,9 @@ jobs:
           poetry run flake8 weni_datalake_sdk
       
       - name: Run tests
-        run: poetry run pytest weni_datalake_sdk
+        run: poetry run pytest --cov-report=xml --cov-branch --cov=weni_datalake_sdk
 
-      # - name: Upload coverage reports to Codecov
-      #   uses: codecov/codecov-action@v5
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
