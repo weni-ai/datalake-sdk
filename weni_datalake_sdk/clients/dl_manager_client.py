@@ -1,7 +1,7 @@
 import requests
-
-from weni.utils.exceptions import DLManagerError
 from weni.paths.validator import validate_path
+from weni.utils.exceptions import DLManagerError
+
 
 class DLManagerClient:
     """
@@ -17,12 +17,14 @@ class DLManagerClient:
         """
         validate_path(path_class)
 
-        payload = {
-            "data": data
-        }
+        payload = {"data": data}
 
         try:
-            response = requests.post(f"{self.base_url}/{path_class.get_table_name()}/send", json=payload, timeout=10)
+            response = requests.post(
+                f"{self.base_url}/{path_class.get_table_name()}/send",
+                json=payload,
+                timeout=10,
+            )
             response.raise_for_status()
         except requests.exceptions.RequestException as e:
             raise DLManagerError(f"Error on send data to DL Manager: {e}")
