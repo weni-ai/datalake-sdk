@@ -1,4 +1,5 @@
 import pytest
+
 from weni_datalake_sdk.paths.msg_path import MsgPath
 from weni_datalake_sdk.paths.validator import validate_path
 from weni_datalake_sdk.utils.exceptions import ValidationError
