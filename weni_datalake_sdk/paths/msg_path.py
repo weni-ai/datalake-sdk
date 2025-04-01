@@ -1,4 +1,4 @@
-from weni.paths.base_path import BasePath
+from weni_datalake_sdk.paths.base_path import BasePath
 
 class MsgPath(BasePath):
     TABLE_NAME = "messages"

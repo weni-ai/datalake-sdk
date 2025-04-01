@@ -1,5 +1,5 @@
-from weni.paths.msg_path import MsgPath
-from weni.utils.exceptions import ValidationError
+from weni_datalake_sdk.paths.msg_path import MsgPath
+from weni_datalake_sdk.utils.exceptions import ValidationError
 
 VALID_CONTRACTS = {
     "messages": MsgPath,
