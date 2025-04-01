@@ -1,4 +1,4 @@
-from weni.paths.msg_path import MsgPath
+from weni_datalake_sdk.paths.msg_path import MsgPath
 
 
 def test_paths():

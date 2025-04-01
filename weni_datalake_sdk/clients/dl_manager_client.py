@@ -1,6 +1,6 @@
 import requests
-from weni.paths.validator import validate_path
-from weni.utils.exceptions import DLManagerError
+from weni_datalake_sdk.paths.validator import validate_path
+from weni_datalake_sdk.utils.exceptions import DLManagerError
 
 
 class DLManagerClient:

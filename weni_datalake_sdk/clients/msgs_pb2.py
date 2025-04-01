@@ -18,6 +18,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import (
+    struct_pb2 as google_dot_protobuf_dot_struct__pb2,
+)  # noqa: F401, E402
+
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
     b'\n\nmsgs.proto\x12\x04msgs\x1a\x1cgoogle/protobuf/struct.proto"D\n\rInsertRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12%\n\x04\x64\x61ta\x18\x02 \x01(\x0b\x32\x17.google.protobuf.Struct" \n\x0eInsertResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2Q\n\x16\x44\x61talakeManagerService\x12\x37\n\nInsertData\x12\x13.msgs.InsertRequest\x1a\x14.msgs.InsertResponseb\x06proto3'
 )

@@ -1,8 +1,8 @@
 import pytest
 import requests_mock
-from weni.clients.dl_manager_client import DLManagerClient
-from weni.paths import MsgPath
-from weni.utils.exceptions import DLManagerError
+from weni_datalake_sdk.clients.dl_manager_client import DLManagerClient
+from weni_datalake_sdk.paths import MsgPath
+from weni_datalake_sdk.utils.exceptions import DLManagerError
 
 BASE_URL = "https://dl-manager.example.com/api"
 

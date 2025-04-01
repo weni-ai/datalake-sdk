@@ -1,7 +1,7 @@
 import pytest
-from weni.paths.msg_path import MsgPath
-from weni.paths.validator import validate_path
-from weni.utils.exceptions import ValidationError
+from weni_datalake_sdk.paths.msg_path import MsgPath
+from weni_datalake_sdk.paths.validator import validate_path
+from weni_datalake_sdk.utils.exceptions import ValidationError
 
 
 class FakePath:
