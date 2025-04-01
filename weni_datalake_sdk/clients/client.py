@@ -3,7 +3,6 @@ import grpc
 from weni_datalake_sdk.clients import msgs_pb2, msgs_pb2_grpc
 from weni_datalake_sdk.paths.validator import validate_path
 
-# SERVER_ADDRESS = "localhost:50051"
 SERVER_ADDRESS = settings.DATALAKE_SERVER_ADDRESS
 
 def send_data(path, data):
