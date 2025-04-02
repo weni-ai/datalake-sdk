@@ -5,6 +5,7 @@ VALID_CONTRACTS = {
     "messages": MsgPath,
 }
 
+
 def validate_path(path_class):
     """
     Validated if path is correct.
