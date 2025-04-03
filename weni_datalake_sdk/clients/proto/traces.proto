@@ -3,7 +3,7 @@ package traces;
 import "google/protobuf/struct.proto";
 
 service DatalakeManagerService {
-    rpc InsertData (InsertRequest) returns (InsertResponse);
+    rpc InsertTraceData (InsertTraceRequest) returns (InsertTraceResponse);
   }
   
   message InsertTraceRequest {
@@ -11,6 +11,6 @@ service DatalakeManagerService {
     google.protobuf.Struct data = 2;
   }
   
-  message InsertResponse {
+  message InsertTraceResponse {
     string status = 1;
   }
