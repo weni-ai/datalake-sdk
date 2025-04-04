@@ -1,8 +1,10 @@
 from weni_datalake_sdk.paths.msg_path import MsgPath
+from weni_datalake_sdk.paths.trace_path import TracePath
 from weni_datalake_sdk.utils.exceptions import ValidationError
 
 VALID_CONTRACTS = {
     "messages": MsgPath,
+    "traces": TracePath,
 }
 
 
