@@ -1,5 +1,6 @@
+import os
+
 import grpc
-from django.conf import settings
 
 from weni_datalake_sdk.clients import (
     msgs_pb2,
@@ -9,7 +10,7 @@ from weni_datalake_sdk.clients import (
 )
 from weni_datalake_sdk.paths.validator import validate_path
 
-SERVER_ADDRESS = settings.DATALAKE_SERVER_ADDRESS
+SERVER_ADDRESS = os.environ.get("DATALAKE_SERVER_ADDRESS")
 
 
 def send_data(path, data):
