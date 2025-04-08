@@ -1,0 +1,4 @@
+[run]
+omit =
+    weni_datalake_sdk/clients/*_pb2.py
+    weni_datalake_sdk/clients/*_pb2_grpc.py
