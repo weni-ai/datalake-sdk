@@ -7,10 +7,7 @@ import requests
 REDSHIFT_QUERY_BASE_URL = os.environ.get("REDSHIFT_QUERY_BASE_URL")
 
 
-def query_redshift(metric: str, query_params: dict = None) -> dict:
-    """
-    Envia uma query SQL para o endpoint do Redshift e retorna os dados.
-    """
+def query_dc_api(metric: str, query_params: dict = None) -> dict:
     if not REDSHIFT_QUERY_BASE_URL:
         raise EnvironmentError("Missing REDSHIFT_QUERY_BASE_URL env variable")
 
@@ -18,30 +15,47 @@ def query_redshift(metric: str, query_params: dict = None) -> dict:
 
     token = get_secrets()
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
+    headers_auth = {
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+        "secretsaccesstoken": token,
     }
 
     payload = query_params or {}
 
-    response = requests.post(url, headers=headers, json=payload)
+    response = requests.request(
+        "GET", url, headers=headers_auth, params=payload, verify=False
+    )
 
-    if not response.ok:
-        raise Exception(f"Query failed [{response.status_code}]: {response.text}")
-
-    return response.json()
+    if response.status_code != 200:
+        if response.status_code == 401:
+            token_old = token
+            # Refresh token
+            token = get_secrets()
+            if token_old == token:
+                raise Exception(
+                    f"Could not send message to DC API! Error: {str(response)} - Token was updated!"
+                    + f" URL: {url}"
+                )
+            else:
+                return query_dc_api(metric, query_params)
+        raise Exception(
+            f"Could not send message to DC API! Error: {str(response)}" + f" URL: {url}"
+        )
+    return response.text
 
 
 def get_secrets():
-    SECRET_NAME = os.environ.get("REDSHIFT_SECRET_NAME")
-    if not SECRET_NAME:
-        raise EnvironmentError("Missing REDSHIFT_SECRET_NAME env variable")
+    REDSHIFT_SECRET = os.environ.get("REDSHIFT_SECRET")
+    if not REDSHIFT_SECRET:
+        raise EnvironmentError("Missing REDSHIFT_SECRET env variable")
 
+    REDSHIFT_ROLE_ARN = os.environ.get("REDSHIFT_ROLE_ARN")
     client_sts = boto3.client("sts")
     credentials = client_sts.assume_role(
-        RoleArn=os.environ.get("REDSHIFT_ROLE_ARN"), RoleSessionName="be-another-me"
+        RoleArn=REDSHIFT_ROLE_ARN, RoleSessionName="be-another-me"
     )["Credentials"]
+
+    print("credentials: ", credentials)
 
     SECRETS_CLIENT = boto3.client(
         "secretsmanager",
@@ -52,7 +66,7 @@ def get_secrets():
 
     try:
         current_secrets = SECRETS_CLIENT.get_secret_value(
-            SecretId=SECRET_NAME, VersionStage="AWSCURRENT"
+            SecretId=REDSHIFT_SECRET, VersionStage="AWSCURRENT"
         )
         current_dict = json.loads(current_secrets["SecretString"])
         return current_dict["token"]
