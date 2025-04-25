@@ -1,3 +1,7 @@
+from weni_datalake_sdk.paths.message_template_path import MessageTemplatePath
+from weni_datalake_sdk.paths.message_template_status_path import (
+    MessageTemplateStatusPath,
+)
 from weni_datalake_sdk.paths.msg_path import MsgPath
 from weni_datalake_sdk.paths.trace_path import TracePath
 from weni_datalake_sdk.utils.exceptions import ValidationError
@@ -5,6 +9,8 @@ from weni_datalake_sdk.utils.exceptions import ValidationError
 VALID_CONTRACTS = {
     "messages": MsgPath,
     "traces": TracePath,
+    "message_templates": MessageTemplatePath,
+    "message_template_status": MessageTemplateStatusPath,
 }
 
 

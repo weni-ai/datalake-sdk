@@ -3,6 +3,8 @@ import os
 import grpc
 
 from weni_datalake_sdk.clients import (
+    message_templates_pb2,
+    message_templates_pb2_grpc,
     msgs_pb2,
     msgs_pb2_grpc,
     traces_pb2,
@@ -37,4 +39,28 @@ def send_trace_data(path_class, data):
     request = traces_pb2.InsertTraceRequest(path=path_class.get_table_name(), data=data)
 
     response = stub.InsertTraceData(request)
+    return response.status
+
+
+def send_message_template_data(path_class, data):
+    validate_path(path_class)
+
+    channel = grpc.insecure_channel(SERVER_ADDRESS)
+    stub = message_templates_pb2_grpc.DatalakeManagerServiceStub(channel)
+
+    request = message_templates_pb2.InsertMessageTemplateRequest(data=data)
+
+    response = stub.InsertMessageTemplateData(request)
+    return response.status
+
+
+def send_message_template_status_data(path_class, data):
+    validate_path(path_class)
+
+    channel = grpc.insecure_channel(SERVER_ADDRESS)
+    stub = message_templates_pb2_grpc.DatalakeManagerServiceStub(channel)
+
+    request = message_templates_pb2.InsertMessageTemplateStatusRequest(data=data)
+
+    response = stub.InsertMessageTemplateStatusData(request)
     return response.status
