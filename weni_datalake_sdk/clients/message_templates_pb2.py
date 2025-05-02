@@ -20,7 +20,9 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
+from google.protobuf import (  # noqa: F401, E402
+    struct_pb2 as google_dot_protobuf_dot_struct__pb2,
+)
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
     b'\n\x17message_templates.proto\x12\x10message_template\x1a\x1cgoogle/protobuf/struct.proto"\x91\x02\n\x1cInsertMessageTemplateRequest\x12\x13\n\x0b\x63ontact_urn\x18\x01 \x01(\t\x12\x0f\n\x07\x63hannel\x18\x02 \x01(\t\x12\x10\n\x08language\x18\x03 \x01(\t\x12\x15\n\rtemplate_name\x18\x04 \x01(\t\x12\x15\n\rtemplate_type\x18\x05 \x01(\t\x12\x13\n\x0btemplate_id\x18\x06 \x01(\t\x12\x12\n\nmessage_id\x18\x07 \x01(\t\x12\x11\n\tdirection\x18\x08 \x01(\t\x12\x1a\n\x12template_variables\x18\t \x01(\t\x12\x0c\n\x04text\x18\n \x01(\t\x12%\n\x04\x64\x61ta\x18\x0b \x01(\x0b\x32\x17.google.protobuf.Struct"/\n\x1dInsertMessageTemplateResponse\x12\x0e\n\x06status\x18\x01 \x01(\t"\x84\x01\n"InsertMessageTemplateStatusRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x12\n\nmessage_id\x18\x02 \x01(\t\x12\x13\n\x0btemplate_id\x18\x03 \x01(\t\x12%\n\x04\x64\x61ta\x18\x04 \x01(\x0b\x32\x17.google.protobuf.Struct"5\n#InsertMessageTemplateStatusResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\xa3\x02\n\x16\x44\x61talakeManagerService\x12|\n\x19InsertMessageTemplateData\x12..message_template.InsertMessageTemplateRequest\x1a/.message_template.InsertMessageTemplateResponse\x12\x8a\x01\n\x1bInsertMessageTemplateStatus\x12\x34.message_template.InsertMessageTemplateStatusRequest\x1a\x35.message_template.InsertMessageTemplateStatusResponseb\x06proto3'
