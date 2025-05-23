@@ -1,11 +1,13 @@
-# Weni Datalake SDK
+# Weni Data Lake SDK
 
-The Weni Datalake SDK is a Python library that provides an interface to interact with Weni's data lake services. It supports operations for sending data, managing message templates, and handling traces.
+The Weni Data Lake SDK is a Python library that provides an interface to interact with Weni's data lake services. It supports operations for sending data, managing message templates, and handling traces.
 
 ## Installation
 
 ```bash
 pip install weni-datalake-sdk
+In case you are using poetry, you can add the package to your project with the following command:
+poetry add weni-datalake-sdk
 ```
 
 ## Environment Variables
@@ -25,7 +27,6 @@ TRACES_METRIC_NAME=your_trace_metric_name
 
 ### 1. Sending Data
 
-#### ✅ Correct Usage:
 ```python
 from weni_datalake_sdk.clients.client import send_data
 from weni_datalake_sdk.paths.your_path import YourPath
@@ -44,18 +45,8 @@ path = YourPath()
 send_data(path, data)
 ```
 
-#### ❌ Incorrect Usage:
-```python
-# DON'T: Send data without proper path validation
-send_data("invalid_path", data)
-
-# DON'T: Send data without required environment variables
-# Make sure DATALAKE_SERVER_ADDRESS is set
-```
-
 ### 2. Working with Message Templates
 
-#### ✅ Correct Usage:
 ```python
 from weni_datalake_sdk.clients.redshift.message_templates import get_message_templates
 
@@ -72,18 +63,8 @@ result = get_message_templates(
 )
 ```
 
-#### ❌ Incorrect Usage:
-```python
-# DON'T: Call without required environment variables
-# Make sure MESSAGE_TEMPLATES_METRIC_NAME is set
-
-# DON'T: Pass invalid parameter types
-get_message_templates(contact_urn=123)  # Should be string
-```
-
 ### 3. Working with Traces
 
-#### ✅ Correct Usage:
 ```python
 from weni_datalake_sdk.clients.redshift.traces import get_traces
 
@@ -96,18 +77,8 @@ result = get_traces(
 )
 ```
 
-#### ❌ Incorrect Usage:
-```python
-# DON'T: Call without required environment variables
-# Make sure TRACES_METRIC_NAME is set
-
-# DON'T: Pass invalid query parameters
-get_traces(query_params="invalid")  # Should be a dictionary
-```
-
 ### 4. Sending Message Template Data
 
-#### ✅ Correct Usage:
 ```python
 from weni_datalake_sdk.clients.client import send_message_template_data
 from weni_datalake_sdk.paths.message_template import MessageTemplatePath
@@ -166,4 +137,4 @@ For contributing to this SDK, please follow these steps:
 
 ## License
 
-[Include license information here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
