@@ -3,11 +3,13 @@ import os
 from weni_datalake_sdk.clients.redshift.redshift_client import query_dc_api
 
 
-def get_message_templates(contact_urn: str = None, template_id: str = None, query_params: dict = None) -> dict:
+def get_message_templates(
+    contact_urn: str = None, template_id: str = None, query_params: dict = None
+) -> dict:
     metric = os.environ.get("MESSAGE_TEMPLATES_METRIC_NAME")
-    
+
     final_params = query_params.copy() if query_params else {}
-    
+
     if contact_urn:
         final_params["contact_urn"] = contact_urn
     if template_id:
