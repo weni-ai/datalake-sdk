@@ -53,14 +53,9 @@ from weni_datalake_sdk.clients.redshift.message_templates import get_message_tem
 # Get templates with specific parameters
 result = get_message_templates(
     contact_urn="contact123",
-    template_id="template456",
-    query_params={"additional": "params"}
+    template_id="template456"
 )
 
-# Get templates with just query parameters
-result = get_message_templates(
-    query_params={"status": "active"}
-)
 ```
 
 ### 3. Working with Traces
@@ -71,8 +66,7 @@ from weni_datalake_sdk.clients.redshift.traces import get_traces
 # Get traces with query parameters
 result = get_traces(
     query_params={
-        "start_date": "2024-01-01",
-        "end_date": "2024-01-31"
+        "message_uuid": "123e4567-e89b-12d3-a456-426614174000"
     }
 )
 ```
