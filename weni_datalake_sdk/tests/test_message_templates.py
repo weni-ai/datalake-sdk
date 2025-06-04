@@ -13,17 +13,17 @@ def mock_env_metric(monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "contact_urn,template_id,query_params,expected_params",
+    "contact_urn,template_uuid,query_params,expected_params",
     [
         ("contact123", None, None, {"contact_urn": "contact123"}),
-        (None, "template123", None, {"template_id": "template123"}),
+        (None, "template123", None, {"template_uuid": "template123"}),
         (
             "contact123",
             "template123",
             {"extra": "param"},
             {
                 "contact_urn": "contact123",
-                "template_id": "template123",
+                "template_uuid": "template123",
                 "extra": "param",
             },
         ),
@@ -31,7 +31,7 @@ def mock_env_metric(monkeypatch):
     ],
 )
 def test_get_message_templates_parameters(
-    mock_env_metric, contact_urn, template_id, query_params, expected_params
+    mock_env_metric, contact_urn, template_uuid, query_params, expected_params
 ):
     with patch(
         "weni_datalake_sdk.clients.redshift.message_templates.query_dc_api"
@@ -39,7 +39,9 @@ def test_get_message_templates_parameters(
         mock_query.return_value = {"data": "test"}
 
         result = get_message_templates(
-            contact_urn=contact_urn, template_id=template_id, query_params=query_params
+            contact_urn=contact_urn,
+            template_uuid=template_uuid,
+            query_params=query_params,
         )
 
         mock_query.assert_called_once_with(
