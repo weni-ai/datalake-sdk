@@ -10,7 +10,6 @@ def get_events(
     query_params: dict = None,
 ) -> dict:
     metric = os.environ.get("EVENTS_METRIC_NAME")
-    metric = "weni-events-stg"
 
     final_params = query_params.copy() if query_params else {}
 
