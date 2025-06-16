@@ -31,7 +31,7 @@ def get_events(
     try:
         print(f"final_params: {final_params}")
         result = query_dc_api(metric=metric, query_params=final_params)
-        return result
+        return result.json()
 
     except Exception as e:
-        raise Exception(f"Error querying message templates: {e}")
+        raise Exception(f"Error querying events: {e}")
