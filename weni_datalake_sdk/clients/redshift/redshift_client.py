@@ -55,8 +55,6 @@ def get_secrets():
         RoleArn=REDSHIFT_ROLE_ARN, RoleSessionName="be-another-me"
     )["Credentials"]
 
-    print("credentials: ", credentials)
-
     SECRETS_CLIENT = boto3.client(
         "secretsmanager",
         aws_access_key_id=credentials["AccessKeyId"],
