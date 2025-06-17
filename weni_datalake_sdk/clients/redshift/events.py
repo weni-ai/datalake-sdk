@@ -29,7 +29,6 @@ def get_events(
         raise Exception("Date end is required")
 
     try:
-        print(f"final_params: {final_params}")
         result = query_dc_api(metric=metric, query_params=final_params)
         return result.json()
 
