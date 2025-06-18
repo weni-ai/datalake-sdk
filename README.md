@@ -12,16 +12,32 @@ poetry add weni-datalake-sdk
 
 ## Environment Variables
 
-Before using the SDK, make sure to set up the following environment variables:
+To insert data into the data lake, you need to set the following environment variables:
 
 ```bash
 DATALAKE_SERVER_ADDRESS=your_server_address
+```
+
+To get data from the data lake, you need to set the following environment variables:
+
+```bash
 REDSHIFT_QUERY_BASE_URL=your_redshift_url
 REDSHIFT_SECRET=your_secret
 REDSHIFT_ROLE_ARN=your_role_arn
-MESSAGE_TEMPLATES_METRIC_NAME=your_metric_name
-TRACES_METRIC_NAME=your_trace_metric_name
+MESSAGE_TEMPLATES_METRIC_NAME=your_metric_name (if you want to get message templates)
+TRACES_METRIC_NAME=your_trace_metric_name (if you want to get traces)
+EVENTS_METRIC_NAME=your_event_metric_name (if you want to get events)
 ```
+
+Although you will need some AWS credentials to get data from the data lake, you can use the following environment variables:
+
+```bash
+AWS_ACCESS_KEY_ID=your_access_key_id
+AWS_SECRET_ACCESS_KEY=your_secret_access_key
+AWS_DEFAULT_REGION=your_region
+```
+
+This is important that we will use assumed role to get data from the data lake.
 
 ## Usage Examples
 
@@ -45,7 +61,29 @@ path = YourPath()
 send_data(path, data)
 ```
 
-### 2. Working with Message Templates
+### 2. Send Event Data
+
+```python
+from weni_datalake_sdk.clients.client import send_event_data
+from weni_datalake_sdk.paths.events_path import EventPath
+
+# Prepare your data
+data = {
+    "event_name": "event_name",
+    "key": "key",
+    "value": "value",
+    "value_type": "value_type",
+    "date": "2021-01-01",
+    "project": "project_uuid",
+    "contact_urn": "contact_urn",
+    "metadata": {
+        "field1": "value1",
+        "field2": "value2"
+    }
+}
+```
+
+### 2. Get Message Templates
 
 ```python
 from weni_datalake_sdk.clients.redshift.message_templates import get_message_templates
@@ -53,12 +91,12 @@ from weni_datalake_sdk.clients.redshift.message_templates import get_message_tem
 # Get templates with specific parameters
 result = get_message_templates(
     contact_urn="contact123",
-    template_id="template456"
+    template_uuid="template_uuid"
 )
 
 ```
 
-### 3. Working with Traces
+### 3. Get Traces
 
 ```python
 from weni_datalake_sdk.clients.redshift.traces import get_traces
@@ -71,19 +109,25 @@ result = get_traces(
 )
 ```
 
-### 4. Sending Message Template Data
+### 4. Get Events
 
 ```python
-from weni_datalake_sdk.clients.client import send_message_template_data
-from weni_datalake_sdk.paths.message_template import MessageTemplatePath
+from weni_datalake_sdk.clients.redshift.events import get_events    
 
-template_data = {
-    "template_id": "template123",
-    "content": "Hello, {{name}}!",
-    "status": "approved"
-}
-
-status = send_message_template_data(MessageTemplatePath, template_data)
+# Get events with query parameters
+result = get_events(
+    query_params={
+        "date_start": "2021-01-01", # date_start is required
+        "date_end": "2021-01-01", # date_end is required
+        "project": "project_uuid", # project is optional
+        "event_type": "event_type", # event_type is optional
+        "contact_urn": "contact_urn", # contact_urn is optional
+        "event_name": "event_name", # event_name is optional
+        "key": "key", # key is optional
+        "value": "value", # value is optional
+        "value_type": "value_type" # value_type is optional
+    }
+)
 ```
 
 ## Error Handling
