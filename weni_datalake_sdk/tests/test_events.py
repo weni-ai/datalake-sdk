@@ -128,7 +128,7 @@ def test_get_events_success(mock_env_metric):
             project="test_project",
             date_start="2023-01-01",
             date_end="2023-01-31",
-            query_params={"extra": "param"},
+            extra="param",
         )
 
         mock_query.assert_called_once_with(
