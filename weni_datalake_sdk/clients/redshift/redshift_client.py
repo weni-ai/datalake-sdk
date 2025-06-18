@@ -41,7 +41,7 @@ def query_dc_api(metric: str, query_params: dict = None) -> dict:
         raise Exception(
             f"Could not send message to DC API! Error: {str(response)}" + f" URL: {url}"
         )
-    return response.text
+    return response
 
 
 def get_secrets():
@@ -54,8 +54,6 @@ def get_secrets():
     credentials = client_sts.assume_role(
         RoleArn=REDSHIFT_ROLE_ARN, RoleSessionName="be-another-me"
     )["Credentials"]
-
-    print("credentials: ", credentials)
 
     SECRETS_CLIENT = boto3.client(
         "secretsmanager",
