@@ -9,7 +9,6 @@ def clean_quotes(obj):
     elif isinstance(obj, list):
         return [clean_quotes(item) for item in obj]
     elif isinstance(obj, str):
-        # Remove aspas duplas no início e fim, se existirem
         if obj.startswith('"') and obj.endswith('"'):
             return obj[1:-1]
         return obj
@@ -19,8 +18,6 @@ def clean_quotes(obj):
 
 def get_events(**kwargs) -> dict:
     metric = os.environ.get("EVENTS_METRIC_NAME")
-    metric = "weni-events-stg"
-    print("metric: ", metric)
 
     if not kwargs.get("project"):
         raise Exception("Project is required")
@@ -41,9 +38,7 @@ def get_events(**kwargs) -> dict:
 
 
 def get_events_count(**kwargs) -> dict:
-    #metric = os.environ.get("EVENTS_COUNT_METRIC_NAME")
-    metric = "weni-events-count"
-    print("metric: ", metric)
+    metric = os.environ.get("EVENTS_COUNT_METRIC_NAME")
 
     if not kwargs.get("project"):
         raise Exception("Project is required")
