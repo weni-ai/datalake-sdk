@@ -84,7 +84,7 @@ def send_event_data(path_class, data):
         try:
             dt = datetime.fromisoformat(data["date"].replace("Z", "+00:00"))
             timestamp.FromDatetime(dt)
-        except:
+        except Exception:
             timestamp.GetCurrentTime()
     else:
         timestamp.GetCurrentTime()
