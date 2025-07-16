@@ -3,6 +3,8 @@ import os
 import grpc
 
 from weni_datalake_sdk.clients import (
+    commerce_webhook_pb2,
+    commerce_webhook_pb2_grpc,
     events_pb2,
     events_pb2_grpc,
     message_templates_pb2,
@@ -112,4 +114,15 @@ def send_event_data(path_class, data):
     )
 
     response = stub.InsertEventData(request)
+    return response.status
+
+def send_commerce_webhook_data(path_class, data):
+    validate_path(path_class)
+
+    channel = grpc.insecure_channel(SERVER_ADDRESS)
+    stub = commerce_webhook_pb2_grpc.CommerceWebhookServiceStub(channel)
+
+    request = commerce_webhook_pb2.InsertCommerceWebhookRequest(data=data)
+
+    response = stub.InsertCommerceWebhookData(request)
     return response.status
