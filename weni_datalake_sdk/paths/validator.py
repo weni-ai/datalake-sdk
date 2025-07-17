@@ -1,3 +1,4 @@
+from weni_datalake_sdk.paths.commerce_webhook import CommerceWebhookPath
 from weni_datalake_sdk.paths.events_path import EventPath
 from weni_datalake_sdk.paths.message_template_path import MessageTemplatePath
 from weni_datalake_sdk.paths.message_template_status_path import (
@@ -13,6 +14,7 @@ VALID_CONTRACTS = {
     "message_templates": MessageTemplatePath,
     "message_template_status": MessageTemplateStatusPath,
     "events": EventPath,
+    "commerce_webhook": CommerceWebhookPath,
 }
 
 
