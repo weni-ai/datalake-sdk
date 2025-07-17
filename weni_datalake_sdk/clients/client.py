@@ -1,6 +1,7 @@
 import os
 
 import grpc
+from google.protobuf import struct_pb2, timestamp_pb2
 
 from weni_datalake_sdk.clients import (
     commerce_webhook_pb2,
@@ -116,13 +117,52 @@ def send_event_data(path_class, data):
     response = stub.InsertEventData(request)
     return response.status
 
+
 def send_commerce_webhook_data(path_class, data):
     validate_path(path_class)
 
     channel = grpc.insecure_channel(SERVER_ADDRESS)
     stub = commerce_webhook_pb2_grpc.CommerceWebhookServiceStub(channel)
 
-    request = commerce_webhook_pb2.InsertCommerceWebhookRequest(data=data)
+    def to_struct(val):
+        if isinstance(val, dict):
+            s = struct_pb2.Struct()
+            s.update(val)
+            return s
+        return val
+
+    # Converte a data para Timestamp se vier como string
+    date = None
+    if data.get("date"):
+        try:
+            from datetime import datetime
+
+            ts = timestamp_pb2.Timestamp()
+            dt = datetime.fromisoformat(data["date"].replace("Z", "+00:00"))
+            ts.FromDatetime(dt)
+            date = ts
+        except Exception:
+            pass
+
+    request = commerce_webhook_pb2.InsertCommerceWebhookRequest(
+        status=data.get("status"),
+        template=data.get("template"),
+        template_variables=to_struct(data.get("template_variables"))
+        if data.get("template_variables") is not None
+        else None,
+        contact_urn=data.get("contact_urn"),
+        error=to_struct(data.get("error")) if data.get("error") is not None else None,
+        data=to_struct(data.get("data")) if data.get("data") is not None else None,
+        date=date,
+        project=data.get("project"),
+        request=to_struct(data.get("request"))
+        if data.get("request") is not None
+        else None,
+        response=to_struct(data.get("response"))
+        if data.get("response") is not None
+        else None,
+        agent=data.get("agent"),
+    )
 
     response = stub.InsertCommerceWebhookData(request)
     return response.status
