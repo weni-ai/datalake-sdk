@@ -3,12 +3,11 @@ from unittest import mock
 import pytest
 
 from weni_datalake_sdk.clients.client import send_commerce_webhook_data
+from weni_datalake_sdk.paths.commerce_webhook import CommerceWebhookPath
 
-
-class DummyPath:
-    @staticmethod
-    def get_table_name():
-        return "dummy"
+"""
+Tests for send_commerce_webhook_data, covering all field combinations and edge cases.
+"""
 
 
 def make_event_data_all_fields():
@@ -73,9 +72,12 @@ def test_send_commerce_webhook_data_variations(event_data_func):
     event_data = event_data_func()
     with mock.patch(
         "weni_datalake_sdk.clients.client.commerce_webhook_pb2_grpc.CommerceWebhookServiceStub"
-    ) as mock_stub:
+    ) as mock_stub, mock.patch(
+        "weni_datalake_sdk.clients.client.grpc.insecure_channel"
+    ) as mock_channel:
         mock_instance = mock.Mock()
         mock_instance.InsertCommerceWebhookData.return_value.status = "ok"
         mock_stub.return_value = mock_instance
-        result = send_commerce_webhook_data(DummyPath, event_data)
+        mock_channel.return_value = mock.Mock()  # Prevents real channel creation
+        result = send_commerce_webhook_data(CommerceWebhookPath, event_data)
         assert result == "ok"
