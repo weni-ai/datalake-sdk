@@ -105,7 +105,7 @@ def send_event_data(path_class, data):
     VALUE_TYPE_MAP = {
         "string": events_pb2.VALUE_TYPE_STRING,
         "int": events_pb2.VALUE_TYPE_INT,
-        "float": events_pb2.VALUE_TYPE_FLOAT,
+        "list": events_pb2.VALUE_TYPE_LIST,
         "bool": events_pb2.VALUE_TYPE_BOOL,
     }
 
