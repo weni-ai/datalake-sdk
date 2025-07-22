@@ -102,6 +102,16 @@ def send_event_data(path_class, data):
         metadata = struct_pb2.Struct()
         metadata.update(data["metadata"])
 
+    VALUE_TYPE_MAP = {
+        "string": events_pb2.VALUE_TYPE_STRING,
+        "int": events_pb2.VALUE_TYPE_INT,
+        "float": events_pb2.VALUE_TYPE_FLOAT,
+        "bool": events_pb2.VALUE_TYPE_BOOL,
+    }
+
+    value_type_str = data.get("value_type", "string").lower()
+    value_type = VALUE_TYPE_MAP.get(value_type_str, events_pb2.VALUE_TYPE_STRING)
+
     # Create request with individual fields as defined in proto
     request = events_pb2.InsertEventRequest(
         event_name=data.get("event_name", ""),
@@ -109,7 +119,7 @@ def send_event_data(path_class, data):
         date=timestamp,
         project=data.get("project", ""),
         contact_urn=data.get("contact_urn", ""),
-        value_type=events_pb2.VALUE_TYPE_STRING,
+        value_type=value_type,
         value=value_data,
         metadata=metadata,
     )
