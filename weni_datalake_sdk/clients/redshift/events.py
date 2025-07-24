@@ -70,6 +70,9 @@ def get_events_count_by_group(**kwargs) -> dict:
     if not kwargs.get("date_end"):
         raise Exception("Date end is required")
 
+    if not kwargs.get("metadata_key"):
+        raise Exception("metadata_key is required")
+
     try:
         result = query_dc_api(metric=metric, query_params=kwargs)
         data = result.json()
