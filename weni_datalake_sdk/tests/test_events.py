@@ -174,3 +174,105 @@ def test_get_events_api_error(mock_env_metric):
                 date_end="2023-01-31",
             )
         assert "Error querying events: API Error" in str(exc_info.value)
+
+
+def test_get_events_count_by_group_success(monkeypatch):
+    monkeypatch.setenv("EVENTS_COUNT_BY_GROUP_METRIC_NAME", "test_metric_group")
+    from weni_datalake_sdk.clients.redshift.events import (
+        get_events_count_by_group,
+    )
+
+    with mock.patch(
+        "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+    ) as mock_query:
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {"data": "grouped"}
+        mock_query.return_value = mock_response
+
+        result = get_events_count_by_group(
+            project="test_project",
+            date_start="2023-01-01",
+            date_end="2023-01-31",
+            metadata_key="topic_uuid",
+            extra="param",
+        )
+
+        mock_query.assert_called_once_with(
+            metric="test_metric_group",
+            query_params={
+                "project": "test_project",
+                "date_start": "2023-01-01",
+                "date_end": "2023-01-31",
+                "metadata_key": "topic_uuid",
+                "extra": "param",
+            },
+        )
+        assert result == {"data": "grouped"}
+
+
+def test_get_events_count_by_group_missing_project():
+    from weni_datalake_sdk.clients.redshift.events import (
+        get_events_count_by_group,
+    )
+
+    with pytest.raises(Exception) as exc_info:
+        get_events_count_by_group(
+            date_start="2023-01-01", date_end="2023-01-31", metadata_key="topic_uuid"
+        )
+    assert str(exc_info.value) == "Project is required"
+
+
+def test_get_events_count_by_group_missing_date_start():
+    from weni_datalake_sdk.clients.redshift.events import (
+        get_events_count_by_group,
+    )
+
+    with pytest.raises(Exception) as exc_info:
+        get_events_count_by_group(
+            project="test_project", date_end="2023-01-31", metadata_key="topic_uuid"
+        )
+    assert str(exc_info.value) == "Date start is required"
+
+
+def test_get_events_count_by_group_missing_date_end():
+    from weni_datalake_sdk.clients.redshift.events import (
+        get_events_count_by_group,
+    )
+
+    with pytest.raises(Exception) as exc_info:
+        get_events_count_by_group(
+            project="test_project", date_start="2023-01-01", metadata_key="topic_uuid"
+        )
+    assert str(exc_info.value) == "Date end is required"
+
+
+def test_get_events_count_by_group_missing_metadata_key():
+    from weni_datalake_sdk.clients.redshift.events import (
+        get_events_count_by_group,
+    )
+
+    with pytest.raises(Exception) as exc_info:
+        get_events_count_by_group(
+            project="test_project", date_start="2023-01-01", date_end="2023-01-31"
+        )
+    assert str(exc_info.value) == "metadata_key is required"
+
+
+def test_get_events_count_by_group_api_error(monkeypatch):
+    monkeypatch.setenv("EVENTS_COUNT_BY_GROUP_METRIC_NAME", "test_metric_group")
+    from weni_datalake_sdk.clients.redshift.events import (
+        get_events_count_by_group,
+    )
+
+    with mock.patch(
+        "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+    ) as mock_query:
+        mock_query.side_effect = Exception("API Error")
+        with pytest.raises(Exception) as exc_info:
+            get_events_count_by_group(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                metadata_key="topic_uuid",
+            )
+        assert "Error querying events count: API Error" in str(exc_info.value)
