@@ -1,34 +1,33 @@
-import pytest
 from unittest import mock
-from datetime import datetime
-from weni_datalake_sdk.clients.client import send_event_data
-from weni_datalake_sdk.clients.redshift.events import get_events
-from weni_datalake_sdk.paths.events_path import EventPath
+
+import pytest
+
+from weni_datalake_sdk.clients.redshift.events import (
+    clean_quotes,
+    get_events,
+    get_events_count,
+    get_events_count_by_group,
+)
 
 
 class TestCleanQuotes:
     def test_clean_quotes_dict(self):
-        from weni_datalake_sdk.clients.redshift.events import clean_quotes
         obj = {"a": '"value"', "b": 2, "c": {"d": '"inner"'}}
         result = clean_quotes(obj)
         assert result == {"a": "value", "b": 2, "c": {"d": "inner"}}
 
     def test_clean_quotes_list(self):
-        from weni_datalake_sdk.clients.redshift.events import clean_quotes
-        obj = ['"foo"', 'bar', 1, {"a": '"baz"'}]
+        obj = ['"foo"', "bar", 1, {"a": '"baz"'}]
         result = clean_quotes(obj)
         assert result == ["foo", "bar", 1, {"a": "baz"}]
 
     def test_clean_quotes_str_with_quotes(self):
-        from weni_datalake_sdk.clients.redshift.events import clean_quotes
         assert clean_quotes('"quoted"') == "quoted"
 
     def test_clean_quotes_str_without_quotes(self):
-        from weni_datalake_sdk.clients.redshift.events import clean_quotes
-        assert clean_quotes('notquoted') == "notquoted"
+        assert clean_quotes("notquoted") == "notquoted"
 
     def test_clean_quotes_int(self):
-        from weni_datalake_sdk.clients.redshift.events import clean_quotes
         assert clean_quotes(123) == 123
 
 
@@ -96,7 +95,6 @@ class TestGetEvents:
 class TestGetEventsCount:
     def test_get_events_count_success(self, monkeypatch):
         monkeypatch.setenv("EVENTS_COUNT_METRIC_NAME", "test_metric_count")
-        from weni_datalake_sdk.clients.redshift.events import get_events_count
         with mock.patch(
             "weni_datalake_sdk.clients.redshift.events.query_dc_api"
         ) as mock_query:
@@ -123,26 +121,22 @@ class TestGetEventsCount:
             assert result == {"data": "counted"}
 
     def test_get_events_count_missing_project(self):
-        from weni_datalake_sdk.clients.redshift.events import get_events_count
         with pytest.raises(Exception) as exc_info:
             get_events_count(date_start="2023-01-01", date_end="2023-01-31")
         assert str(exc_info.value) == "Project is required"
 
     def test_get_events_count_missing_date_start(self):
-        from weni_datalake_sdk.clients.redshift.events import get_events_count
         with pytest.raises(Exception) as exc_info:
             get_events_count(project="test_project", date_end="2023-01-31")
         assert str(exc_info.value) == "Date start is required"
 
     def test_get_events_count_missing_date_end(self):
-        from weni_datalake_sdk.clients.redshift.events import get_events_count
         with pytest.raises(Exception) as exc_info:
             get_events_count(project="test_project", date_start="2023-01-01")
         assert str(exc_info.value) == "Date end is required"
 
     def test_get_events_count_api_error(self, monkeypatch):
         monkeypatch.setenv("EVENTS_COUNT_METRIC_NAME", "test_metric_count")
-        from weni_datalake_sdk.clients.redshift.events import get_events_count
         with mock.patch(
             "weni_datalake_sdk.clients.redshift.events.query_dc_api"
         ) as mock_query:
@@ -159,7 +153,6 @@ class TestGetEventsCount:
 class TestGetEventsCountByGroup:
     def test_get_events_count_by_group_success(self, monkeypatch):
         monkeypatch.setenv("EVENTS_COUNT_BY_GROUP_METRIC_NAME", "test_metric_group")
-        from weni_datalake_sdk.clients.redshift.events import get_events_count_by_group
         with mock.patch(
             "weni_datalake_sdk.clients.redshift.events.query_dc_api"
         ) as mock_query:
@@ -188,32 +181,39 @@ class TestGetEventsCountByGroup:
             assert result == {"data": "grouped"}
 
     def test_get_events_count_by_group_missing_project(self):
-        from weni_datalake_sdk.clients.redshift.events import get_events_count_by_group
         with pytest.raises(Exception) as exc_info:
-            get_events_count_by_group(date_start="2023-01-01", date_end="2023-01-31", metadata_key="topic_uuid")
+            get_events_count_by_group(
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                metadata_key="topic_uuid",
+            )
         assert str(exc_info.value) == "Project is required"
 
     def test_get_events_count_by_group_missing_date_start(self):
-        from weni_datalake_sdk.clients.redshift.events import get_events_count_by_group
         with pytest.raises(Exception) as exc_info:
-            get_events_count_by_group(project="test_project", date_end="2023-01-31", metadata_key="topic_uuid")
+            get_events_count_by_group(
+                project="test_project", date_end="2023-01-31", metadata_key="topic_uuid"
+            )
         assert str(exc_info.value) == "Date start is required"
 
     def test_get_events_count_by_group_missing_date_end(self):
-        from weni_datalake_sdk.clients.redshift.events import get_events_count_by_group
         with pytest.raises(Exception) as exc_info:
-            get_events_count_by_group(project="test_project", date_start="2023-01-01", metadata_key="topic_uuid")
+            get_events_count_by_group(
+                project="test_project",
+                date_start="2023-01-01",
+                metadata_key="topic_uuid",
+            )
         assert str(exc_info.value) == "Date end is required"
 
     def test_get_events_count_by_group_missing_metadata_key(self):
-        from weni_datalake_sdk.clients.redshift.events import get_events_count_by_group
         with pytest.raises(Exception) as exc_info:
-            get_events_count_by_group(project="test_project", date_start="2023-01-01", date_end="2023-01-31")
+            get_events_count_by_group(
+                project="test_project", date_start="2023-01-01", date_end="2023-01-31"
+            )
         assert str(exc_info.value) == "metadata_key is required"
 
     def test_get_events_count_by_group_api_error(self, monkeypatch):
         monkeypatch.setenv("EVENTS_COUNT_BY_GROUP_METRIC_NAME", "test_metric_group")
-        from weni_datalake_sdk.clients.redshift.events import get_events_count_by_group
         with mock.patch(
             "weni_datalake_sdk.clients.redshift.events.query_dc_api"
         ) as mock_query:
