@@ -56,7 +56,8 @@ def get_events_count(**kwargs) -> dict:
 
     except Exception as e:
         raise Exception(f"Error querying events count: {e}")
-    
+
+
 def get_events_count_by_group(**kwargs) -> dict:
     metric = os.environ.get("EVENTS_COUNT_BY_GROUP_METRIC_NAME")
 
