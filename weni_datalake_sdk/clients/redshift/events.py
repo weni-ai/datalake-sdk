@@ -56,7 +56,8 @@ def get_events_count(**kwargs) -> dict:
 
     except Exception as e:
         raise Exception(f"Error querying events count: {e}")
-    
+
+
 def get_events_count_by_group(**kwargs) -> dict:
     metric = os.environ.get("EVENTS_COUNT_BY_GROUP_METRIC_NAME")
 
@@ -68,6 +69,9 @@ def get_events_count_by_group(**kwargs) -> dict:
 
     if not kwargs.get("date_end"):
         raise Exception("Date end is required")
+
+    if not kwargs.get("metadata_key"):
+        raise Exception("metadata_key is required")
 
     try:
         result = query_dc_api(metric=metric, query_params=kwargs)
