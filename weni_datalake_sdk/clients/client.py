@@ -1,4 +1,5 @@
 import os
+from concurrent.futures import ThreadPoolExecutor
 
 import grpc
 
@@ -56,6 +57,20 @@ def send_message_template_data(path_class, data):
     return response.status
 
 
+DATALAKE_MAXIMUN_WORKERS = os.environ.get("DATALAKE_MAXIMUN_WORKERS", 5)
+MESSAGE_TEMPLATE_EXECUTOR = ThreadPoolExecutor(max_workers=DATALAKE_MAXIMUN_WORKERS)
+
+
+def send_message_template_data_async(path_class, data):
+    """
+    Send message template data in parallel using the global executor.
+    Returns a Future.
+    """
+    return MESSAGE_TEMPLATE_EXECUTOR.submit(
+        send_message_template_data, path_class, data
+    )
+
+
 def send_message_template_status_data(path_class, data):
     validate_path(path_class)
 
@@ -66,6 +81,21 @@ def send_message_template_status_data(path_class, data):
 
     response = stub.InsertMessageTemplateStatusData(request)
     return response.status
+
+
+MESSAGE_TEMPLATE_STATUS_EXECUTOR = ThreadPoolExecutor(
+    max_workers=DATALAKE_MAXIMUN_WORKERS
+)
+
+
+def send_message_template_status_data_async(path_class, data):
+    """
+    Send event data in parallel using the global executor.
+    Returns a Future.
+    """
+    return MESSAGE_TEMPLATE_STATUS_EXECUTOR.submit(
+        send_message_template_status_data, path_class, data
+    )
 
 
 def send_event_data(path_class, data):
@@ -123,3 +153,14 @@ def send_event_data(path_class, data):
 
     response = stub.InsertEventData(request)
     return response.status
+
+
+EVENT_EXECUTOR = ThreadPoolExecutor(max_workers=DATALAKE_MAXIMUN_WORKERS)
+
+
+def send_event_data_async(path_class, data):
+    """
+    Send event data in parallel using the global executor.
+    Returns a Future.
+    """
+    return EVENT_EXECUTOR.submit(send_event_data, path_class, data)
