@@ -83,7 +83,35 @@ data = {
 }
 ```
 
-### 2. Get Message Templates
+### 3. Send Commerce Webhook Data
+
+```python
+from weni_datalake_sdk.clients.client import send_commerce_webhook_data
+from weni_datalake_sdk.paths.commerce_webhook import CommerceWebhookPath
+from datetime import datetime
+
+# Prepare your data (all fields are optional)
+data = {
+    "status": 1,
+    "template": "template_name",
+    "template_variables": {"foo": "bar"},
+    "contact_urn": "whatsapp:+55123456789",
+    "error": {"msg": "error"},
+    "data": {"foo": "bar"},
+    "date": datetime.now().isoformat(),
+    "project": "your-project-uuid",
+    "request": {"req": "value"},
+    "response": {"res": "value"},
+    "agent": "some-uuid"
+}
+
+# Send commerce webhook data
+send_commerce_webhook_data(CommerceWebhookPath, data)
+```
+
+All fields are optional. For Struct fields, use dicts. For date, use an ISO string. If you don't want to send a field, omit it or set it to None.
+
+### 4. Get Message Templates
 
 ```python
 from weni_datalake_sdk.clients.redshift.message_templates import get_message_templates
@@ -96,7 +124,7 @@ result = get_message_templates(
 
 ```
 
-### 3. Get Traces
+### 5. Get Traces
 
 ```python
 from weni_datalake_sdk.clients.redshift.traces import get_traces
@@ -109,7 +137,7 @@ result = get_traces(
 )
 ```
 
-### 4. Get Events
+### 6. Get Events
 
 ```python
 from weni_datalake_sdk.clients.redshift.events import get_events    
