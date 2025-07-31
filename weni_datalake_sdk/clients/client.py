@@ -1,4 +1,5 @@
 import os
+from concurrent.futures import ThreadPoolExecutor
 
 import grpc
 from google.protobuf import struct_pb2, timestamp_pb2
@@ -59,6 +60,20 @@ def send_message_template_data(path_class, data):
     return response.status
 
 
+DATALAKE_MAXIMUN_WORKERS = os.environ.get("DATALAKE_MAXIMUN_WORKERS", 5)
+MESSAGE_TEMPLATE_EXECUTOR = ThreadPoolExecutor(max_workers=DATALAKE_MAXIMUN_WORKERS)
+
+
+def send_message_template_data_async(path_class, data):
+    """
+    Send message template data in parallel using the global executor.
+    Returns a Future.
+    """
+    return MESSAGE_TEMPLATE_EXECUTOR.submit(
+        send_message_template_data, path_class, data
+    )
+
+
 def send_message_template_status_data(path_class, data):
     validate_path(path_class)
 
@@ -69,6 +84,21 @@ def send_message_template_status_data(path_class, data):
 
     response = stub.InsertMessageTemplateStatusData(request)
     return response.status
+
+
+MESSAGE_TEMPLATE_STATUS_EXECUTOR = ThreadPoolExecutor(
+    max_workers=DATALAKE_MAXIMUN_WORKERS
+)
+
+
+def send_message_template_status_data_async(path_class, data):
+    """
+    Send event data in parallel using the global executor.
+    Returns a Future.
+    """
+    return MESSAGE_TEMPLATE_STATUS_EXECUTOR.submit(
+        send_message_template_status_data, path_class, data
+    )
 
 
 def send_event_data(path_class, data):
@@ -102,6 +132,16 @@ def send_event_data(path_class, data):
         metadata = struct_pb2.Struct()
         metadata.update(data["metadata"])
 
+    VALUE_TYPE_MAP = {
+        "string": events_pb2.VALUE_TYPE_STRING,
+        "int": events_pb2.VALUE_TYPE_INT,
+        "list": events_pb2.VALUE_TYPE_LIST,
+        "bool": events_pb2.VALUE_TYPE_BOOL,
+    }
+
+    value_type_str = data.get("value_type", "string").lower()
+    value_type = VALUE_TYPE_MAP.get(value_type_str, events_pb2.VALUE_TYPE_STRING)
+
     # Create request with individual fields as defined in proto
     request = events_pb2.InsertEventRequest(
         event_name=data.get("event_name", ""),
@@ -109,13 +149,24 @@ def send_event_data(path_class, data):
         date=timestamp,
         project=data.get("project", ""),
         contact_urn=data.get("contact_urn", ""),
-        value_type=events_pb2.VALUE_TYPE_STRING,
+        value_type=value_type,
         value=value_data,
         metadata=metadata,
     )
 
     response = stub.InsertEventData(request)
     return response.status
+
+
+EVENT_EXECUTOR = ThreadPoolExecutor(max_workers=DATALAKE_MAXIMUN_WORKERS)
+
+
+def send_event_data_async(path_class, data):
+    """
+    Send event data in parallel using the global executor.
+    Returns a Future.
+    """
+    return EVENT_EXECUTOR.submit(send_event_data, path_class, data)
 
 
 def send_commerce_webhook_data(path_class, data):
@@ -131,7 +182,6 @@ def send_commerce_webhook_data(path_class, data):
             return s
         return val
 
-    # Converte a data para Timestamp se vier como string
     date = None
     if data.get("date"):
         try:

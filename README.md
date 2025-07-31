@@ -158,6 +158,51 @@ result = get_events(
 )
 ```
 
+### 5. Get Events Count
+
+```python
+from weni_datalake_sdk.clients.redshift.events import get_events_count
+
+# Get events count with required and optional parameters
+result = get_events_count(
+    project="your_project_uuid", # project is required
+    date_start="2025-06-03T00:00:00Z", # date_start is required
+    date_end="2025-07-30T23:59:59Z", # date_end is required
+    event_type="event_type", # event_type is optional
+    event_name="event_name", # event_name is optional
+    key="topics",  # key is optional
+    value="value", # value is optional
+    value_type="value_type", # value_type is optional
+    contact_urn="contact_urn", # contact_urn is optional
+)
+print(result)
+```
+
+### 6. Get Events Count By Group
+
+```python
+from weni_datalake_sdk.clients.redshift.events import get_events_count_by_group
+
+# Get events count grouped by a metadata key
+result = get_events_count_by_group(
+    project="your_project_uuid", # project is required
+    date_start="2025-06-03T00:00:00Z", # date_start is required
+    date_end="2025-07-30T23:59:59Z", # date_end is required
+    metadata_key="topic_uuid", # metadata_key is required
+    event_type="event_type", # event_type is optional
+    event_name="event_name", # event_name is optional
+    key="topics",  # key is optional
+    value="value", # value is optional
+    value_type="value_type", # value_type is optional
+    contact_urn="contact_urn", # contact_urn is optional
+    group_by="subtopic_uuid",  # group_by is optional
+    metadata_value="uuid" # metadata_value is optional
+)
+print(result)
+```
+
+If you don't pass group_by value, the result will be aggregated by value.
+
 ## Error Handling
 
 The SDK includes proper error handling. Always wrap your calls in try-except blocks:
