@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 (2025-07-31)
+
+- Add commerce webhook
+
 ## 0.4.0 (2025-07-28)
 
 - Add thread function to send data paralel
