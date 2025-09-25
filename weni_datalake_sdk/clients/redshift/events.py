@@ -76,7 +76,30 @@ def get_events_count_by_group(**kwargs) -> dict:
     try:
         result = query_dc_api(metric=metric, query_params=kwargs)
         data = result.json()
-        return data
+        return clean_quotes(data)
 
     except Exception as e:
         raise Exception(f"Error querying events count: {e}")
+
+
+def get_events_silver(**kwargs) -> dict:
+    metric = os.environ.get("EVENTS_SILVER_METRIC_NAME")
+
+    if not kwargs.get("project"):
+        raise Exception("Project is required")
+
+    if not kwargs.get("date_start"):
+        raise Exception("Date start is required")
+
+    if not kwargs.get("date_end"):
+        raise Exception("Date end is required")
+    
+    if not kwargs.get("table"):
+        raise Exception("Table is required")
+
+    try:
+        result = query_dc_api(metric=metric, query_params=kwargs)
+        data = result.json()
+        return data
+    except Exception as e:
+        raise Exception(f"Error querying events silver: {e}")
