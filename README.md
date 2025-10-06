@@ -256,6 +256,12 @@ print(result)
 The valid tables are: "topics", "weni_csat", "weni_nps", "conversation_classification".
 This function is used to get events from silver tables. You can use the same parameters as the get_events function.
 
+Don't forget to set in your enviroment the following variables to get silver data:
+
+EVENTS_SILVER_METRIC_NAME
+EVENTS_SILVER_COUNT_METRIC_NAME
+EVENTS_SILVER_COUNT_BY_GROUP_METRIC_NAME
+
 ## Error Handling
 
 The SDK includes proper error handling. Always wrap your calls in try-except blocks:
