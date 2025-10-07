@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0 (2025-10-06)
+
+- Add get_events from silver tables
+
 ## 0.5.0 (2025-07-31)
 
 - Add commerce webhook

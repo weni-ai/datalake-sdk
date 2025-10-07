@@ -1,7 +1,7 @@
 [tool.poetry]
 packages = [{ include = "weni_datalake_sdk" }]
 name = "weni-datalake-sdk"
-version = "0.5.0"
+version = "0.6.0"
 description = "Lib to connect python/django modules to redshift"
 authors = ["Lucas Linhares <lucas.linhares@vtex.com>"]
 license = "MIT"

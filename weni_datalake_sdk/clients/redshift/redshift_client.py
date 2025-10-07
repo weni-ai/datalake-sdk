@@ -1,5 +1,6 @@
 import json
 import os
+from urllib.parse import urlencode
 
 import boto3
 import requests
@@ -21,9 +22,10 @@ def query_dc_api(metric: str, query_params: dict = None) -> dict:
     }
 
     payload = query_params or {}
+    query_string = urlencode(payload, safe=":")
 
     response = requests.request(
-        "GET", url, headers=headers_auth, params=payload, verify=False
+        "GET", url, headers=headers_auth, params=query_string, verify=False
     )
 
     if response.status_code != 200:

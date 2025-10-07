@@ -203,6 +203,65 @@ print(result)
 
 If you don't pass group_by value, the result will be aggregated by value.
 
+### 7. Get Events from silver tables
+
+```python
+from weni_datalake_sdk.clients.redshift.events import get_events_silver
+
+# Get events count grouped by a metadata key
+result = get_events_silver(
+    project="your_project_uuid", # project is required
+    date_start="2025-06-03T00:00:00Z", # date_start is required
+    date_end="2025-07-30T23:59:59Z", # date_end is required
+    table="topics", # table is required
+    ... # other parameters are optional
+)
+print(result)
+```
+
+### 8. Get Events Count from silver tables
+
+```python
+from weni_datalake_sdk.clients.redshift.events import get_events_silver_count
+```
+
+# Get events count grouped by a metadata key
+result = get_events_silver_count(
+    project="your_project_uuid", # project is required
+    date_start="2025-06-03T00:00:00Z", # date_start is required
+    date_end="2025-07-30T23:59:59Z", # date_end is required
+    table="topics", # table is required
+    ... # other parameters are optional
+)
+print(result)
+```
+
+### 9. Get Events Count from silver tables by group
+
+```python
+from weni_datalake_sdk.clients.redshift.events import get_events_silver_count_by_group
+```
+
+# Get events count grouped by a metadata key
+result = get_events_silver_count_by_group(
+    project="your_project_uuid", # project is required
+    date_start="2025-06-03T00:00:00Z", # date_start is required
+    date_end="2025-07-30T23:59:59Z", # date_end is required
+    table="topics", # table is required
+    ... # other parameters are optional
+)
+print(result)
+```
+
+The valid tables are: "topics", "weni_csat", "weni_nps", "conversation_classification".
+This function is used to get events from silver tables. You can use the same parameters as the get_events function.
+
+Don't forget to set in your enviroment the following variables to get silver data:
+
+EVENTS_SILVER_METRIC_NAME
+EVENTS_SILVER_COUNT_METRIC_NAME
+EVENTS_SILVER_COUNT_BY_GROUP_METRIC_NAME
+
 ## Error Handling
 
 The SDK includes proper error handling. Always wrap your calls in try-except blocks:
