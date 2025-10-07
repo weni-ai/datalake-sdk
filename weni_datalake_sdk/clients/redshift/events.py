@@ -2,8 +2,8 @@ import os
 
 from weni_datalake_sdk.clients.redshift.redshift_client import query_dc_api
 
-
 valid_tables = ["topics", "weni_csat", "weni_nps", "conversation_classification"]
+
 
 def clean_quotes(obj):
     if isinstance(obj, dict):
@@ -96,11 +96,11 @@ def get_events_silver(**kwargs) -> dict:
 
     if not kwargs.get("date_end"):
         raise Exception("Date end is required")
-    
+
     if not table:
         raise Exception("Table is required")
-    
-    if not table in valid_tables:
+
+    if table not in valid_tables:
         raise Exception("Table is not valid")
 
     try:
@@ -110,11 +110,10 @@ def get_events_silver(**kwargs) -> dict:
     except Exception as e:
         raise Exception(f"Error querying events silver: {e}")
 
+
 def get_events_silver_count(**kwargs) -> dict:
     metric = os.environ.get("EVENTS_SILVER_COUNT_METRIC_NAME")
     table = kwargs.get("table")
-
-    valid_tables = ["topics", "weni_csat", "weni_nps", "conversation_classification"]
 
     if not kwargs.get("project"):
         raise Exception("Project is required")
@@ -124,11 +123,11 @@ def get_events_silver_count(**kwargs) -> dict:
 
     if not kwargs.get("date_end"):
         raise Exception("Date end is required")
-    
+
     if not table:
         raise Exception("Table is required")
-    
-    if not table in valid_tables:
+
+    if table not in valid_tables:
         raise Exception("Table is not valid")
 
     try:
@@ -138,8 +137,10 @@ def get_events_silver_count(**kwargs) -> dict:
     except Exception as e:
         raise Exception(f"Error querying events silver: {e}")
 
+
 def get_events_silver_count_by_group(**kwargs) -> dict:
     metric = os.environ.get("EVENTS_SILVER_COUNT_BY_GROUP_METRIC_NAME")
+    table = kwargs.get("table")
 
     if not kwargs.get("project"):
         raise Exception("Project is required")
@@ -153,10 +154,10 @@ def get_events_silver_count_by_group(**kwargs) -> dict:
     if not kwargs.get("metadata_key"):
         raise Exception("metadata_key is required")
 
-    if not kwargs.get("table"):
+    if not table:
         raise Exception("Table is required")
 
-    if not kwargs.get("table") in valid_tables:
+    if table not in valid_tables:
         raise Exception("Table is not valid")
 
     try:
