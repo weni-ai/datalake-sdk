@@ -253,7 +253,7 @@ result = get_events_silver_count_by_group(
 print(result)
 ```
 
-The valid tables are: "topics", "weni_csat", "weni_nps", "conversation_classification".
+The valid tables are: "topics", "weni_csat", "weni_nps", "conversation_classification", "conversion_lead"
 This function is used to get events from silver tables. You can use the same parameters as the get_events function.
 
 Don't forget to set in your enviroment the following variables to get silver data:
