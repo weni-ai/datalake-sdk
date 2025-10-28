@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1 (2025-10-28)
+
+- Update doc to include conversion_lead silver table
+
 ## 0.6.0 (2025-10-06)
 
 - Add get_events from silver tables
