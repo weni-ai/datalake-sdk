@@ -2,7 +2,13 @@ import os
 
 from weni_datalake_sdk.clients.redshift.redshift_client import query_dc_api
 
-valid_tables = ["topics", "weni_csat", "weni_nps", "conversation_classification", "conversion_lead"]
+valid_tables = [
+    "topics",
+    "weni_csat",
+    "weni_nps",
+    "conversation_classification",
+    "conversion_lead",
+]
 
 
 def clean_quotes(obj):
