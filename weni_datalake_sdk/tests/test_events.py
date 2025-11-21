@@ -5,6 +5,7 @@ import pytest
 from weni_datalake_sdk.clients.redshift.events import (
     clean_quotes,
     get_events,
+    get_events_capi_daily,
     get_events_count,
     get_events_count_by_group,
     get_events_silver,
@@ -151,6 +152,66 @@ class TestGetEventsCount:
                     date_end="2023-01-31",
                 )
             assert "Error querying events count: API Error" in str(exc_info.value)
+
+
+class TestGetEventsCapiDaily:
+    @pytest.fixture
+    def mock_env_metric(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_CAPI_DAILY_METRIC_NAME", "test_metric_capi_daily")
+
+    def test_get_events_capi_daily_success(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"data": "capi_daily"}
+            mock_query.return_value = mock_response
+
+            result = get_events_capi_daily(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_capi_daily",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "extra": "param",
+                },
+            )
+            assert result == {"data": "capi_daily"}
+
+    def test_get_events_capi_daily_missing_project(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_capi_daily(date_start="2023-01-01", date_end="2023-01-31")
+        assert str(exc_info.value) == "Project is required"
+
+    def test_get_events_capi_daily_missing_date_end_when_start_provided(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_capi_daily(project="test_project", date_start="2023-01-01")
+        assert str(exc_info.value) == "Date end is required if date start is provided"
+
+    def test_get_events_capi_daily_missing_date_start_when_end_provided(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_capi_daily(project="test_project", date_end="2023-01-31")
+        assert str(exc_info.value) == "Date start is required if date end is provided"
+
+    def test_get_events_capi_daily_api_error(self):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_capi_daily(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                )
+            assert "Error querying events capi daily: API Error" in str(exc_info.value)
 
 
 class TestGetEventsCountByGroup:
