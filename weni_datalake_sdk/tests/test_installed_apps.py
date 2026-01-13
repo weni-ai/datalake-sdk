@@ -2,7 +2,9 @@ from unittest import mock
 
 import pytest
 
-from weni_datalake_sdk.clients.redshift.installed_apps import get_installed_apps
+from weni_datalake_sdk.clients.redshift.installed_apps import (
+    get_installed_apps,
+)
 
 
 class TestGetInstalledApps:
@@ -63,4 +65,3 @@ class TestGetInstalledApps:
                     account="acc_123", date_start="2023-01-01", date_end="2023-01-31"
                 )
             assert "Error querying installed apps: API Error" in str(exc_info.value)
-
