@@ -138,6 +138,33 @@ class TestGetEventsCount:
             get_events_count(project="test_project", date_start="2023-01-01")
         assert str(exc_info.value) == "Date end is required"
 
+    def test_get_events_count_with_agent_uuid(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_COUNT_METRIC_NAME", "test_metric_count")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"data": "counted"}
+            mock_query.return_value = mock_response
+
+            result = get_events_count(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                agent_uuid="abc-123",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_count",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "agent_uuid": "abc-123",
+                },
+            )
+            assert result == {"data": "counted"}
+
     def test_get_events_count_api_error(self, monkeypatch):
         monkeypatch.setenv("EVENTS_COUNT_METRIC_NAME", "test_metric_count")
         with mock.patch(

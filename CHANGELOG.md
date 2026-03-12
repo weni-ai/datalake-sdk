@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.2 (2026-3-12)
+- New filter on get events count
+
 ## 0.6.1 (2025-10-28)
 
 - Update doc to include conversion_lead silver table
