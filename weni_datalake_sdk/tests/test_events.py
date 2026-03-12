@@ -5,11 +5,15 @@ import pytest
 from weni_datalake_sdk.clients.redshift.events import (
     clean_quotes,
     get_events,
+    get_events_avg,
     get_events_count,
     get_events_count_by_group,
+    get_events_max,
+    get_events_min,
     get_events_silver,
     get_events_silver_count,
     get_events_silver_count_by_group,
+    get_events_sum,
 )
 
 
@@ -151,6 +155,238 @@ class TestGetEventsCount:
                     date_end="2023-01-31",
                 )
             assert "Error querying events count: API Error" in str(exc_info.value)
+
+
+class TestGetEventsSum:
+    def test_get_events_sum_success(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_SUM_METRIC_NAME", "test_metric_sum")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"data": "summed"}
+            mock_query.return_value = mock_response
+
+            result = get_events_sum(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_sum",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "extra": "param",
+                },
+            )
+            assert result == {"data": "summed"}
+
+    def test_get_events_sum_missing_project(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_sum(date_start="2023-01-01", date_end="2023-01-31")
+        assert str(exc_info.value) == "Project is required"
+
+    def test_get_events_sum_missing_date_start(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_sum(project="test_project", date_end="2023-01-31")
+        assert str(exc_info.value) == "Date start is required"
+
+    def test_get_events_sum_missing_date_end(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_sum(project="test_project", date_start="2023-01-01")
+        assert str(exc_info.value) == "Date end is required"
+
+    def test_get_events_sum_api_error(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_SUM_METRIC_NAME", "test_metric_sum")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_sum(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                )
+            assert "Error querying events sum: API Error" in str(exc_info.value)
+
+
+class TestGetEventsAvg:
+    def test_get_events_avg_success(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_AVG_METRIC_NAME", "test_metric_avg")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"data": "averaged"}
+            mock_query.return_value = mock_response
+
+            result = get_events_avg(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_avg",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "extra": "param",
+                },
+            )
+            assert result == {"data": "averaged"}
+
+    def test_get_events_avg_missing_project(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_avg(date_start="2023-01-01", date_end="2023-01-31")
+        assert str(exc_info.value) == "Project is required"
+
+    def test_get_events_avg_missing_date_start(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_avg(project="test_project", date_end="2023-01-31")
+        assert str(exc_info.value) == "Date start is required"
+
+    def test_get_events_avg_missing_date_end(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_avg(project="test_project", date_start="2023-01-01")
+        assert str(exc_info.value) == "Date end is required"
+
+    def test_get_events_avg_api_error(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_AVG_METRIC_NAME", "test_metric_avg")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_avg(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                )
+            assert "Error querying events avg: API Error" in str(exc_info.value)
+
+
+class TestGetEventsMax:
+    def test_get_events_max_success(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_MAX_METRIC_NAME", "test_metric_max")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"data": "maxed"}
+            mock_query.return_value = mock_response
+
+            result = get_events_max(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_max",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "extra": "param",
+                },
+            )
+            assert result == {"data": "maxed"}
+
+    def test_get_events_max_missing_project(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_max(date_start="2023-01-01", date_end="2023-01-31")
+        assert str(exc_info.value) == "Project is required"
+
+    def test_get_events_max_missing_date_start(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_max(project="test_project", date_end="2023-01-31")
+        assert str(exc_info.value) == "Date start is required"
+
+    def test_get_events_max_missing_date_end(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_max(project="test_project", date_start="2023-01-01")
+        assert str(exc_info.value) == "Date end is required"
+
+    def test_get_events_max_api_error(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_MAX_METRIC_NAME", "test_metric_max")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_max(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                )
+            assert "Error querying events max: API Error" in str(exc_info.value)
+
+
+class TestGetEventsMin:
+    def test_get_events_min_success(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_MIN_METRIC_NAME", "test_metric_min")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"data": "minned"}
+            mock_query.return_value = mock_response
+
+            result = get_events_min(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_min",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "extra": "param",
+                },
+            )
+            assert result == {"data": "minned"}
+
+    def test_get_events_min_missing_project(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_min(date_start="2023-01-01", date_end="2023-01-31")
+        assert str(exc_info.value) == "Project is required"
+
+    def test_get_events_min_missing_date_start(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_min(project="test_project", date_end="2023-01-31")
+        assert str(exc_info.value) == "Date start is required"
+
+    def test_get_events_min_missing_date_end(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_min(project="test_project", date_start="2023-01-01")
+        assert str(exc_info.value) == "Date end is required"
+
+    def test_get_events_min_api_error(self, monkeypatch):
+        monkeypatch.setenv("EVENTS_MIN_METRIC_NAME", "test_metric_min")
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_min(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                )
+            assert "Error querying events min: API Error" in str(exc_info.value)
 
 
 class TestGetEventsCountByGroup:
