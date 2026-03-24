@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0 (2026-03-24)
+- Add installed apps
+- New weni events aggregation queries
+
 ## 0.6.2 (2026-3-12)
 - New filter on get events count
 
