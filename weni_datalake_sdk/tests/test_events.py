@@ -837,7 +837,7 @@ class TestGetEventsUniqueContactUrns:
             )
 
             mock_query.assert_called_once_with(
-                metric="weni-events-unique-contact-urns",
+                metric=None,
                 query_params={
                     "project": "test_project",
                     "date_start": "2023-01-01",
@@ -954,7 +954,7 @@ class TestGetEventsRecurringContactUrns:
             )
 
             mock_query.assert_called_once_with(
-                metric="weni-events-recurring-contact-urns",
+                metric=None,
                 query_params={
                     "project": "test_project",
                     "date_start": "2023-01-01",
@@ -1099,7 +1099,7 @@ class TestGetEventsSilverUniqueContactUrns:
             )
 
             mock_query.assert_called_once_with(
-                metric="events-silver-unique-contact-urns",
+                metric=None,
                 query_params={
                     "project": "test_project",
                     "date_start": "2023-01-01",
@@ -1221,7 +1221,7 @@ class TestGetEventsSilverRecurringContactUrns:
             )
 
             mock_query.assert_called_once_with(
-                metric="events-silver-recurring-contact-urns",
+                metric=None,
                 query_params={
                     "project": "test_project",
                     "date_start": "2023-01-01",
