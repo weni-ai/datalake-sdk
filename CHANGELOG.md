@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.8.0 (2026-04-29)
+- Add new methods to get unique and recurring contacts in Datalake
+
 ## 0.7.0 (2026-03-24)
 - Add installed apps
 - New weni events aggregation queries
