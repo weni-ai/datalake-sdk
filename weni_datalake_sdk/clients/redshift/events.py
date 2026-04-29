@@ -185,7 +185,7 @@ def get_events_recurring_contact_urns(**kwargs) -> dict:
 
 def get_events_silver_unique_contact_urns(**kwargs) -> dict:
     metric = os.environ.get("EVENTS_SILVER_UNIQUE_CONTACT_URNS_METRIC_NAME")
-    
+
     table = kwargs.get("table")
 
     if not kwargs.get("project"):
@@ -209,9 +209,7 @@ def get_events_silver_unique_contact_urns(**kwargs) -> dict:
         return data
 
     except Exception as e:
-        raise Exception(
-            f"Error querying events silver unique contact urns: {e}"
-        )
+        raise Exception(f"Error querying events silver unique contact urns: {e}")
 
 
 def get_events_silver_recurring_contact_urns(**kwargs) -> dict:
@@ -240,9 +238,7 @@ def get_events_silver_recurring_contact_urns(**kwargs) -> dict:
         return data
 
     except Exception as e:
-        raise Exception(
-            f"Error querying events silver recurring contact urns: {e}"
-        )
+        raise Exception(f"Error querying events silver recurring contact urns: {e}")
 
 
 def get_events_count_by_group(**kwargs) -> dict:

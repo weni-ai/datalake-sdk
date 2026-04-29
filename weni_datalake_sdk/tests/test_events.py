@@ -1039,9 +1039,8 @@ class TestGetEventsRecurringContactUrns:
                     date_start="2023-01-01",
                     date_end="2023-01-31",
                 )
-            assert (
-                "Error querying events recurring contact urns: API Error"
-                in str(exc_info.value)
+            assert "Error querying events recurring contact urns: API Error" in str(
+                exc_info.value
             )
 
 
@@ -1162,9 +1161,8 @@ class TestGetEventsSilverUniqueContactUrns:
                     date_end="2023-01-31",
                     table="topics",
                 )
-            assert (
-                "Error querying events silver unique contact urns: API Error"
-                in str(exc_info.value)
+            assert "Error querying events silver unique contact urns: API Error" in str(
+                exc_info.value
             )
 
 
@@ -1204,9 +1202,7 @@ class TestGetEventsSilverRecurringContactUrns:
             )
             assert result == {"recurring_contact_urns": 17}
 
-    def test_get_events_silver_recurring_contact_urns_default_metric(
-        self, monkeypatch
-    ):
+    def test_get_events_silver_recurring_contact_urns_default_metric(self, monkeypatch):
         monkeypatch.delenv(
             "EVENTS_SILVER_RECURRING_CONTACT_URNS_METRIC_NAME", raising=False
         )
