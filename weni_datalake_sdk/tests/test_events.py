@@ -10,10 +10,14 @@ from weni_datalake_sdk.clients.redshift.events import (
     get_events_count_by_group,
     get_events_max,
     get_events_min,
+    get_events_recurring_contact_urns,
     get_events_silver,
     get_events_silver_count,
     get_events_silver_count_by_group,
+    get_events_silver_recurring_contact_urns,
+    get_events_silver_unique_contact_urns,
     get_events_sum,
+    get_events_unique_contact_urns,
 )
 
 
@@ -781,3 +785,505 @@ class TestGetEventsSilverCountByGroup:
                     metadata_key="topic_uuid",
                 )
             assert "Error querying events count: API Error" in str(exc_info.value)
+
+
+class TestGetEventsUniqueContactUrns:
+    @pytest.fixture
+    def mock_env_metric(self, monkeypatch):
+        monkeypatch.setenv(
+            "EVENTS_UNIQUE_CONTACT_URNS_METRIC_NAME",
+            "test_metric_unique_contact_urns",
+        )
+
+    def test_get_events_unique_contact_urns_success(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"unique_contact_urns": 42}
+            mock_query.return_value = mock_response
+
+            result = get_events_unique_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_unique_contact_urns",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "extra": "param",
+                },
+            )
+            assert result == {"unique_contact_urns": 42}
+
+    def test_get_events_unique_contact_urns_default_metric(self, monkeypatch):
+        monkeypatch.delenv("EVENTS_UNIQUE_CONTACT_URNS_METRIC_NAME", raising=False)
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"unique_contact_urns": 10}
+            mock_query.return_value = mock_response
+
+            result = get_events_unique_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+            )
+
+            mock_query.assert_called_once_with(
+                metric=None,
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                },
+            )
+            assert result == {"unique_contact_urns": 10}
+
+    def test_get_events_unique_contact_urns_with_optional_params(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"unique_contact_urns": 7}
+            mock_query.return_value = mock_response
+
+            result = get_events_unique_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                event_name="order_created",
+                key="some_key",
+                contact_urn="whatsapp:+5511999999999",
+                value_type="string",
+                value="some_value",
+                metadata="some_metadata",
+                metadata_key="agent_uuid",
+                metadata_value="abc-123",
+                agent_uuid="abc-123",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_unique_contact_urns",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "event_name": "order_created",
+                    "key": "some_key",
+                    "contact_urn": "whatsapp:+5511999999999",
+                    "value_type": "string",
+                    "value": "some_value",
+                    "metadata": "some_metadata",
+                    "metadata_key": "agent_uuid",
+                    "metadata_value": "abc-123",
+                    "agent_uuid": "abc-123",
+                },
+            )
+            assert result == {"unique_contact_urns": 7}
+
+    def test_get_events_unique_contact_urns_api_error(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_unique_contact_urns(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                )
+            assert "Error querying events unique contact urns: API Error" in str(
+                exc_info.value
+            )
+
+
+class TestGetEventsRecurringContactUrns:
+    @pytest.fixture
+    def mock_env_metric(self, monkeypatch):
+        monkeypatch.setenv(
+            "EVENTS_RECURRING_CONTACT_URNS_METRIC_NAME",
+            "test_metric_recurring_contact_urns",
+        )
+
+    def test_get_events_recurring_contact_urns_success(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"recurring_contact_urns": 12}
+            mock_query.return_value = mock_response
+
+            result = get_events_recurring_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_recurring_contact_urns",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "extra": "param",
+                },
+            )
+            assert result == {"recurring_contact_urns": 12}
+
+    def test_get_events_recurring_contact_urns_default_metric(self, monkeypatch):
+        monkeypatch.delenv("EVENTS_RECURRING_CONTACT_URNS_METRIC_NAME", raising=False)
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"recurring_contact_urns": 5}
+            mock_query.return_value = mock_response
+
+            result = get_events_recurring_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+            )
+
+            mock_query.assert_called_once_with(
+                metric=None,
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                },
+            )
+            assert result == {"recurring_contact_urns": 5}
+
+    def test_get_events_recurring_contact_urns_with_optional_params(
+        self, mock_env_metric
+    ):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"recurring_contact_urns": 3}
+            mock_query.return_value = mock_response
+
+            result = get_events_recurring_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                event_name="order_created",
+                key="some_key",
+                contact_urn="whatsapp:+5511999999999",
+                value_type="string",
+                value="some_value",
+                metadata="some_metadata",
+                metadata_key="agent_uuid",
+                metadata_value="abc-123",
+                agent_uuid="abc-123",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_recurring_contact_urns",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "event_name": "order_created",
+                    "key": "some_key",
+                    "contact_urn": "whatsapp:+5511999999999",
+                    "value_type": "string",
+                    "value": "some_value",
+                    "metadata": "some_metadata",
+                    "metadata_key": "agent_uuid",
+                    "metadata_value": "abc-123",
+                    "agent_uuid": "abc-123",
+                },
+            )
+            assert result == {"recurring_contact_urns": 3}
+
+    def test_get_events_recurring_contact_urns_missing_project(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_recurring_contact_urns(
+                date_start="2023-01-01", date_end="2023-01-31"
+            )
+        assert str(exc_info.value) == "Project is required"
+
+    def test_get_events_recurring_contact_urns_missing_date_start(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_recurring_contact_urns(
+                project="test_project", date_end="2023-01-31"
+            )
+        assert str(exc_info.value) == "Date start is required"
+
+    def test_get_events_recurring_contact_urns_missing_date_end(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_recurring_contact_urns(
+                project="test_project", date_start="2023-01-01"
+            )
+        assert str(exc_info.value) == "Date end is required"
+
+    def test_get_events_recurring_contact_urns_api_error(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_recurring_contact_urns(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                )
+            assert "Error querying events recurring contact urns: API Error" in str(
+                exc_info.value
+            )
+
+
+class TestGetEventsSilverUniqueContactUrns:
+    @pytest.fixture
+    def mock_env_metric(self, monkeypatch):
+        monkeypatch.setenv(
+            "EVENTS_SILVER_UNIQUE_CONTACT_URNS_METRIC_NAME",
+            "test_metric_silver_unique_contact_urns",
+        )
+
+    def test_get_events_silver_unique_contact_urns_success(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"unique_contact_urns": 99}
+            mock_query.return_value = mock_response
+
+            result = get_events_silver_unique_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                table="topics",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_silver_unique_contact_urns",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "table": "topics",
+                    "extra": "param",
+                },
+            )
+            assert result == {"unique_contact_urns": 99}
+
+    def test_get_events_silver_unique_contact_urns_default_metric(self, monkeypatch):
+        monkeypatch.delenv(
+            "EVENTS_SILVER_UNIQUE_CONTACT_URNS_METRIC_NAME", raising=False
+        )
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"unique_contact_urns": 1}
+            mock_query.return_value = mock_response
+
+            result = get_events_silver_unique_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                table="topics",
+            )
+
+            mock_query.assert_called_once_with(
+                metric=None,
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "table": "topics",
+                },
+            )
+            assert result == {"unique_contact_urns": 1}
+
+    def test_get_events_silver_unique_contact_urns_missing_project(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_unique_contact_urns(
+                date_start="2023-01-01", date_end="2023-01-31", table="topics"
+            )
+        assert str(exc_info.value) == "Project is required"
+
+    def test_get_events_silver_unique_contact_urns_missing_date_start(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_unique_contact_urns(
+                project="test_project", date_end="2023-01-31", table="topics"
+            )
+        assert str(exc_info.value) == "Date start is required"
+
+    def test_get_events_silver_unique_contact_urns_missing_date_end(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_unique_contact_urns(
+                project="test_project", date_start="2023-01-01", table="topics"
+            )
+        assert str(exc_info.value) == "Date end is required"
+
+    def test_get_events_silver_unique_contact_urns_missing_table(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_unique_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+            )
+        assert str(exc_info.value) == "Table is required"
+
+    def test_get_events_silver_unique_contact_urns_invalid_table(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_unique_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                table="invalid_table",
+            )
+        assert str(exc_info.value) == "Table is not valid"
+
+    def test_get_events_silver_unique_contact_urns_api_error(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_silver_unique_contact_urns(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                    table="topics",
+                )
+            assert "Error querying events silver unique contact urns: API Error" in str(
+                exc_info.value
+            )
+
+
+class TestGetEventsSilverRecurringContactUrns:
+    @pytest.fixture
+    def mock_env_metric(self, monkeypatch):
+        monkeypatch.setenv(
+            "EVENTS_SILVER_RECURRING_CONTACT_URNS_METRIC_NAME",
+            "test_metric_silver_recurring_contact_urns",
+        )
+
+    def test_get_events_silver_recurring_contact_urns_success(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"recurring_contact_urns": 17}
+            mock_query.return_value = mock_response
+
+            result = get_events_silver_recurring_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                table="topics",
+                extra="param",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_silver_recurring_contact_urns",
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "table": "topics",
+                    "extra": "param",
+                },
+            )
+            assert result == {"recurring_contact_urns": 17}
+
+    def test_get_events_silver_recurring_contact_urns_default_metric(self, monkeypatch):
+        monkeypatch.delenv(
+            "EVENTS_SILVER_RECURRING_CONTACT_URNS_METRIC_NAME", raising=False
+        )
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = {"recurring_contact_urns": 2}
+            mock_query.return_value = mock_response
+
+            result = get_events_silver_recurring_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                table="topics",
+            )
+
+            mock_query.assert_called_once_with(
+                metric=None,
+                query_params={
+                    "project": "test_project",
+                    "date_start": "2023-01-01",
+                    "date_end": "2023-01-31",
+                    "table": "topics",
+                },
+            )
+            assert result == {"recurring_contact_urns": 2}
+
+    def test_get_events_silver_recurring_contact_urns_missing_project(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_recurring_contact_urns(
+                date_start="2023-01-01", date_end="2023-01-31", table="topics"
+            )
+        assert str(exc_info.value) == "Project is required"
+
+    def test_get_events_silver_recurring_contact_urns_missing_date_start(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_recurring_contact_urns(
+                project="test_project", date_end="2023-01-31", table="topics"
+            )
+        assert str(exc_info.value) == "Date start is required"
+
+    def test_get_events_silver_recurring_contact_urns_missing_date_end(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_recurring_contact_urns(
+                project="test_project", date_start="2023-01-01", table="topics"
+            )
+        assert str(exc_info.value) == "Date end is required"
+
+    def test_get_events_silver_recurring_contact_urns_missing_table(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_recurring_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+            )
+        assert str(exc_info.value) == "Table is required"
+
+    def test_get_events_silver_recurring_contact_urns_invalid_table(self):
+        with pytest.raises(Exception) as exc_info:
+            get_events_silver_recurring_contact_urns(
+                project="test_project",
+                date_start="2023-01-01",
+                date_end="2023-01-31",
+                table="invalid_table",
+            )
+        assert str(exc_info.value) == "Table is not valid"
+
+    def test_get_events_silver_recurring_contact_urns_api_error(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.events.query_dc_api"
+        ) as mock_query:
+            mock_query.side_effect = Exception("API Error")
+            with pytest.raises(Exception) as exc_info:
+                get_events_silver_recurring_contact_urns(
+                    project="test_project",
+                    date_start="2023-01-01",
+                    date_end="2023-01-31",
+                    table="topics",
+                )
+            assert (
+                "Error querying events silver recurring contact urns: API Error"
+                in str(exc_info.value)
+            )
