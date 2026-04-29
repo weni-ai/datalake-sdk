@@ -150,6 +150,101 @@ def get_events_min(**kwargs) -> dict:
         raise Exception(f"Error querying events min: {e}")
 
 
+def get_events_unique_contact_urns(**kwargs) -> dict:
+    metric = os.environ.get("EVENTS_UNIQUE_CONTACT_URNS_METRIC_NAME")
+
+    try:
+        result = query_dc_api(metric=metric, query_params=kwargs)
+        data = result.json()
+        return data
+
+    except Exception as e:
+        raise Exception(f"Error querying events unique contact urns: {e}")
+
+
+def get_events_recurring_contact_urns(**kwargs) -> dict:
+    metric = os.environ.get("EVENTS_RECURRING_CONTACT_URNS_METRIC_NAME")
+
+    if not kwargs.get("project"):
+        raise Exception("Project is required")
+
+    if not kwargs.get("date_start"):
+        raise Exception("Date start is required")
+
+    if not kwargs.get("date_end"):
+        raise Exception("Date end is required")
+
+    try:
+        result = query_dc_api(metric=metric, query_params=kwargs)
+        data = result.json()
+        return data
+
+    except Exception as e:
+        raise Exception(f"Error querying events recurring contact urns: {e}")
+
+
+def get_events_silver_unique_contact_urns(**kwargs) -> dict:
+    metric = os.environ.get("EVENTS_SILVER_UNIQUE_CONTACT_URNS_METRIC_NAME")
+    
+    table = kwargs.get("table")
+
+    if not kwargs.get("project"):
+        raise Exception("Project is required")
+
+    if not kwargs.get("date_start"):
+        raise Exception("Date start is required")
+
+    if not kwargs.get("date_end"):
+        raise Exception("Date end is required")
+
+    if not table:
+        raise Exception("Table is required")
+
+    if table not in valid_tables:
+        raise Exception("Table is not valid")
+
+    try:
+        result = query_dc_api(metric=metric, query_params=kwargs)
+        data = result.json()
+        return data
+
+    except Exception as e:
+        raise Exception(
+            f"Error querying events silver unique contact urns: {e}"
+        )
+
+
+def get_events_silver_recurring_contact_urns(**kwargs) -> dict:
+    metric = os.environ.get("EVENTS_SILVER_RECURRING_CONTACT_URNS_METRIC_NAME")
+
+    table = kwargs.get("table")
+
+    if not kwargs.get("project"):
+        raise Exception("Project is required")
+
+    if not kwargs.get("date_start"):
+        raise Exception("Date start is required")
+
+    if not kwargs.get("date_end"):
+        raise Exception("Date end is required")
+
+    if not table:
+        raise Exception("Table is required")
+
+    if table not in valid_tables:
+        raise Exception("Table is not valid")
+
+    try:
+        result = query_dc_api(metric=metric, query_params=kwargs)
+        data = result.json()
+        return data
+
+    except Exception as e:
+        raise Exception(
+            f"Error querying events silver recurring contact urns: {e}"
+        )
+
+
 def get_events_count_by_group(**kwargs) -> dict:
     metric = os.environ.get("EVENTS_COUNT_BY_GROUP_METRIC_NAME")
 
