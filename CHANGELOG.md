@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.9.0 (2026-06-17)
+- Add get_orders_shopping_assistant to query shopping assistant orders via DQAPI
+
 ## 0.8.0 (2026-04-29)
 - Add new methods to get unique and recurring contacts in Datalake
 
