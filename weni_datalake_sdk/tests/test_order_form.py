@@ -47,7 +47,9 @@ class TestGetOrderFormAbandonedCarts:
             )
             assert result[0]["profile_id"] == "profile-123"
 
-    def test_get_order_form_abandoned_carts_without_sales_channel(self, mock_env_metric):
+    def test_get_order_form_abandoned_carts_without_sales_channel(
+        self, mock_env_metric
+    ):
         with mock.patch(
             "weni_datalake_sdk.clients.redshift.order_form.query_dc_api"
         ) as mock_query:
