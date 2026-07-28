@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.9.1 (2026-07-28)
+- Fix README formatting for usage examples
+
 ## 0.9.0 (2026-07-28)
 - Add get_order_form_abandoned_carts to query checkout_silver.order_form_consolidated via DQAPI
 
