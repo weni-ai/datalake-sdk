@@ -1,9 +1,7 @@
 # Changelog
 
-## 0.9.0 (2026-07-16)
+## 0.9.0 (2026-07-28)
 - Add get_order_form_abandoned_carts to query checkout_silver.order_form_consolidated via DQAPI
-- Return abandoned carts for profiles who never submitted an order (1 row per profile)
-- Support optional sales_channel filter (defaults to channel 1 in the metric)
 
 ## 0.8.0 (2026-04-29)
 - Add new methods to get unique and recurring contacts in Datalake
