@@ -27,6 +27,7 @@ REDSHIFT_ROLE_ARN=your_role_arn
 MESSAGE_TEMPLATES_METRIC_NAME=your_metric_name (if you want to get message templates)
 TRACES_METRIC_NAME=your_trace_metric_name (if you want to get traces)
 EVENTS_METRIC_NAME=your_event_metric_name (if you want to get events)
+ORDER_FORM_ABANDONED_CARTS_METRIC_NAME=your_metric_name (if you want to get order form abandoned carts)
 ```
 
 Although you will need some AWS credentials to get data from the data lake, you can use the following environment variables:
@@ -261,6 +262,33 @@ Don't forget to set in your enviroment the following variables to get silver dat
 EVENTS_SILVER_METRIC_NAME
 EVENTS_SILVER_COUNT_METRIC_NAME
 EVENTS_SILVER_COUNT_BY_GROUP_METRIC_NAME
+
+### 10. Get Order Form Abandoned Carts
+
+```python
+from weni_datalake_sdk.clients.redshift.order_form import get_order_form_abandoned_carts
+
+# Get abandoned carts from profiles who never submitted an order
+result = get_order_form_abandoned_carts(
+    account_name="superangeloni", # account_name is required
+    dt_start="2026-04-01 00:00:00", # dt_start is required
+    dt_end="2026-07-13 00:00:00", # dt_end is required
+    sales_channel="1", # sales_channel is optional (defaults to channel 1 in the metric)
+)
+print(result)
+```
+
+The response follows the DQAPI envelope and returns one row per profile in `values`:
+
+```python
+rows = result["values"]
+for row in rows:
+    print(row["profile_id"], row["last_total_value"], row["funnel_score"])
+```
+
+Don't forget to set in your enviroment the following variable:
+
+ORDER_FORM_ABANDONED_CARTS_METRIC_NAME
 
 ## Error Handling
 
