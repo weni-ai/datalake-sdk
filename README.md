@@ -159,7 +159,7 @@ result = get_events(
 )
 ```
 
-### 5. Get Events Count
+### 7. Get Events Count
 
 ```python
 from weni_datalake_sdk.clients.redshift.events import get_events_count
@@ -179,7 +179,7 @@ result = get_events_count(
 print(result)
 ```
 
-### 6. Get Events Count By Group
+### 8. Get Events Count By Group
 
 ```python
 from weni_datalake_sdk.clients.redshift.events import get_events_count_by_group
@@ -204,12 +204,11 @@ print(result)
 
 If you don't pass group_by value, the result will be aggregated by value.
 
-### 7. Get Events from silver tables
+### 9. Get Events from silver tables
 
 ```python
 from weni_datalake_sdk.clients.redshift.events import get_events_silver
 
-# Get events count grouped by a metadata key
 result = get_events_silver(
     project="your_project_uuid", # project is required
     date_start="2025-06-03T00:00:00Z", # date_start is required
@@ -220,13 +219,11 @@ result = get_events_silver(
 print(result)
 ```
 
-### 8. Get Events Count from silver tables
+### 10. Get Events Count from silver tables
 
 ```python
 from weni_datalake_sdk.clients.redshift.events import get_events_silver_count
-```
 
-# Get events count grouped by a metadata key
 result = get_events_silver_count(
     project="your_project_uuid", # project is required
     date_start="2025-06-03T00:00:00Z", # date_start is required
@@ -237,13 +234,11 @@ result = get_events_silver_count(
 print(result)
 ```
 
-### 9. Get Events Count from silver tables by group
+### 11. Get Events Count from silver tables by group
 
 ```python
 from weni_datalake_sdk.clients.redshift.events import get_events_silver_count_by_group
-```
 
-# Get events count grouped by a metadata key
 result = get_events_silver_count_by_group(
     project="your_project_uuid", # project is required
     date_start="2025-06-03T00:00:00Z", # date_start is required
@@ -259,16 +254,17 @@ This function is used to get events from silver tables. You can use the same par
 
 Don't forget to set in your enviroment the following variables to get silver data:
 
+```
 EVENTS_SILVER_METRIC_NAME
 EVENTS_SILVER_COUNT_METRIC_NAME
 EVENTS_SILVER_COUNT_BY_GROUP_METRIC_NAME
+```
 
-### 10. Get Order Form Abandoned Carts
+### 12. Get Order Form Abandoned Carts
 
 ```python
 from weni_datalake_sdk.clients.redshift.order_form import get_order_form_abandoned_carts
 
-# Get abandoned carts from profiles who never submitted an order
 result = get_order_form_abandoned_carts(
     account_name="superangeloni", # account_name is required
     dt_start="2026-04-01 00:00:00", # dt_start is required
@@ -276,11 +272,7 @@ result = get_order_form_abandoned_carts(
     sales_channel="1", # sales_channel is optional (defaults to channel 1 in the metric)
 )
 print(result)
-```
 
-The response follows the DQAPI envelope and returns one row per profile in `values`:
-
-```python
 rows = result["values"]
 for row in rows:
     print(row["profile_id"], row["last_total_value"], row["funnel_score"])
@@ -288,7 +280,9 @@ for row in rows:
 
 Don't forget to set in your enviroment the following variable:
 
+```
 ORDER_FORM_ABANDONED_CARTS_METRIC_NAME
+```
 
 ## Error Handling
 
