@@ -28,6 +28,8 @@ MESSAGE_TEMPLATES_METRIC_NAME=your_metric_name (if you want to get message templ
 TRACES_METRIC_NAME=your_trace_metric_name (if you want to get traces)
 EVENTS_METRIC_NAME=your_event_metric_name (if you want to get events)
 ORDER_FORM_ABANDONED_CARTS_METRIC_NAME=your_metric_name (if you want to get order form abandoned carts)
+CTWA_METRIC_NAME=your_metric_name (if you want to get ctwa events)
+CTWA_BY_CAMPAIGN_METRIC_NAME=your_metric_name (if you want to get ctwa metrics by campaign)
 ```
 
 Although you will need some AWS credentials to get data from the data lake, you can use the following environment variables:
@@ -282,6 +284,68 @@ Don't forget to set in your enviroment the following variable:
 
 ```
 ORDER_FORM_ABANDONED_CARTS_METRIC_NAME
+```
+
+### 13. Get CTWA events
+
+```python
+from weni_datalake_sdk.clients.redshift.ctwa import get_ctwa
+
+result = get_ctwa(
+    project="your_project_uuid", # project is required
+    date_start="2026-01-01", # date_start is optional
+    date_end="2026-01-31", # date_end is optional
+    campaign_source="campaign-123", # campaign_source is optional
+    waba="waba-id", # waba is optional
+    channel="whatsapp", # channel is optional
+    event_name="event_name", # event_name is optional
+    key="key", # key is optional
+    value="conversation_started", # value is optional
+    contact_urn="contact_urn", # contact_urn is optional
+    metadata_key="metadata_key", # metadata_key is optional
+    metadata_value="metadata_value", # metadata_value is optional
+    limit="100", # limit is optional (1-1000)
+    offset="0", # offset is optional
+)
+print(result)
+
+rows = result["values"]
+```
+
+Don't forget to set in your enviroment the following variable:
+
+```
+CTWA_METRIC_NAME
+```
+
+### 14. Get CTWA metrics by campaign
+
+```python
+from weni_datalake_sdk.clients.redshift.ctwa import get_ctwa_by_campaign
+
+result = get_ctwa_by_campaign(
+    project="your_project_uuid", # project is required
+    date_start="2026-01-01", # date_start is optional
+    date_end="2026-01-31", # date_end is optional
+    campaign_source="campaign-123", # campaign_source is optional
+    waba="waba-id", # waba is optional
+    channel="whatsapp", # channel is optional
+    event_name="event_name", # event_name is optional
+    key="key", # key is optional
+    value="conversation_started", # value is optional
+    contact_urn="contact_urn", # contact_urn is optional
+    metadata_key="metadata_key", # metadata_key is optional
+    metadata_value="metadata_value", # metadata_value is optional
+)
+print(result)
+
+rows = result["values"]
+```
+
+Don't forget to set in your enviroment the following variable:
+
+```
+CTWA_BY_CAMPAIGN_METRIC_NAME
 ```
 
 ## Error Handling
