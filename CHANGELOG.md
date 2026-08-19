@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.10.0 (2026-08-18)
+- Add get_ctwa and get_ctwa_by_campaign to query CTWA events via DQAPI
+
 ## 0.9.1 (2026-07-28)
 - Fix README formatting for usage examples
 
