@@ -325,8 +325,8 @@ from weni_datalake_sdk.clients.redshift.ctwa import get_ctwa_by_campaign
 
 result = get_ctwa_by_campaign(
     project="your_project_uuid", # project is required
-    date_start="2026-01-01", # date_start is optional
-    date_end="2026-01-31", # date_end is optional
+    date_start="2026-01-01", # date_start is required
+    date_end="2026-01-31", # date_end is required
     campaign_source="campaign-123", # campaign_source is optional
     waba="waba-id", # waba is optional
     channel="whatsapp", # channel is optional

@@ -113,6 +113,91 @@ class TestGetCtwaByCampaign:
 
         assert "Project is required" in str(exc_info.value)
 
+    def test_get_ctwa_by_campaign_missing_date_start(self, mock_env_metric):
+        with pytest.raises(Exception) as exc_info:
+            get_ctwa_by_campaign(project="project-uuid", date_end="2026-01-31")
+
+        assert "Date start is required" in str(exc_info.value)
+
+    def test_get_ctwa_by_campaign_missing_date_end(self, mock_env_metric):
+        with pytest.raises(Exception) as exc_info:
+            get_ctwa_by_campaign(project="project-uuid", date_start="2026-01-01")
+
+        assert "Date end is required" in str(exc_info.value)
+
+    def test_get_ctwa_by_campaign_strips_time_from_dates(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.ctwa.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = [{"campaign_source": "campaign-123"}]
+            mock_query.return_value = mock_response
+
+            get_ctwa_by_campaign(
+                project="project-uuid",
+                date_start="2026-08-19T00:00:00",
+                date_end="2026-08-21T23:59:59",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_ctwa_by_campaign",
+                query_params={
+                    "project": "project-uuid",
+                    "date_start": "2026-08-19",
+                    "date_end": "2026-08-22",
+                },
+            )
+
+    def test_get_ctwa_by_campaign_keeps_date_only_bounds(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.ctwa.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = [{"campaign_source": "campaign-123"}]
+            mock_query.return_value = mock_response
+
+            get_ctwa_by_campaign(
+                project="project-uuid",
+                date_start="2026-08-19",
+                date_end="2026-08-21",
+            )
+
+            mock_query.assert_called_once_with(
+                metric="test_metric_ctwa_by_campaign",
+                query_params={
+                    "project": "project-uuid",
+                    "date_start": "2026-08-19",
+                    "date_end": "2026-08-21",
+                },
+            )
+
+    def test_get_ctwa_by_campaign_empty_list_returns_zeros(self, mock_env_metric):
+        with mock.patch(
+            "weni_datalake_sdk.clients.redshift.ctwa.query_dc_api"
+        ) as mock_query:
+            mock_response = mock.Mock()
+            mock_response.json.return_value = [{}]
+            mock_query.return_value = mock_response
+
+            result = get_ctwa_by_campaign(
+                project="project-uuid",
+                date_start="2026-08-19",
+                date_end="2026-08-21",
+            )
+
+            assert result == [
+                {
+                    "campaign_source": None,
+                    "project": "project-uuid",
+                    "waba": None,
+                    "channel": None,
+                    "conversation_started": 0,
+                    "lead_qualified": 0,
+                    "purchase_completed": 0,
+                    "order_value": 0.0,
+                }
+            ]
+
     def test_get_ctwa_by_campaign_api_error(self, mock_env_metric):
         with mock.patch(
             "weni_datalake_sdk.clients.redshift.ctwa.query_dc_api"
@@ -120,6 +205,10 @@ class TestGetCtwaByCampaign:
             mock_query.side_effect = Exception("API Error")
 
             with pytest.raises(Exception) as exc_info:
-                get_ctwa_by_campaign(project="project-uuid")
+                get_ctwa_by_campaign(
+                    project="project-uuid",
+                    date_start="2026-01-01",
+                    date_end="2026-01-31",
+                )
 
             assert "Error querying ctwa by campaign: API Error" in str(exc_info.value)
